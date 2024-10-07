@@ -39,7 +39,7 @@ public class Ticket {
 	private String notes;
 	
 	@ManyToOne
-	@JoinColumn(name="status_id", nullable=false)	
+	@JoinColumn(name="status_id")	
 	private Status status;
 	
 	@ManyToMany()
@@ -51,7 +51,8 @@ public class Ticket {
 	private List<Category> categories;
 	
 	@OneToOne
-	private User admin;
+	@JoinColumn(name="operator_id")
+	private Operator operator;
 
 	@CreationTimestamp
 	private Timestamp createdAt;

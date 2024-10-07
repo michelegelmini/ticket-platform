@@ -5,7 +5,9 @@ import java.util.Set;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+
 import jakarta.persistence.ManyToMany;
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -14,16 +16,16 @@ public class User {
 
 	@Id
 	private Integer id;
-	
+
 	@NotNull
 	@NotEmpty
 	private String username;
-	
+
 	@NotNull
 	@NotEmpty
 	private String password;
-	
-	@ManyToMany (fetch = FetchType.EAGER)
+
+	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<Role> roles;
 
 	public Integer getId() {
@@ -57,6 +59,5 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
-	
-	
+
 }

@@ -30,4 +30,36 @@ public class Category {
 		
 		@ManyToMany(mappedBy = "categories")
 		private List<Ticket> tickets;
+
+		public Integer getId() {
+			return id;
+		}
+
+		public void setId(Integer id) {
+			this.id = id;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public int getPriority() {
+			return priority;
+		}
+
+		public void setPriority(int priority) {
+			this.priority = priority;
+		}
+
+		public List<Ticket> getTickets() {
+			return tickets;
+		}
+
+		public void setTickets(List<Ticket> tickets) {
+			this.tickets = tickets;
+		}
 }
