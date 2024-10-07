@@ -38,7 +38,7 @@ public class Ticket {
 	private String content;
 	
 	@NotNull
-	@Size(min=1, max=5)
+	//@Size(min=1, max=5, message = "{ticket.priority.invalid}")
 	private int priority;
 
 	private String notes;

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmins:th="http://www.thymeleaf.org">
+
+	<head th:insert="~{fragments/fragments :: head}">
+	</head>
+
+	<body>
+		<header>
+			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+		</header>
+		<main class="container">
+			<div class="row">
+				<div class="col-12">
+					<h1 class="py-4 mb-2 text-center">Creating new ticket</h1>
+
+					<form id="ticket-form" th:object="${ticket}" th:action="@{/tickets/create}"
+						method="POST">
+
+
+						<div class="mb-3">
+							<label for="exampleFormControlInput1" class="form-label">Title</label>
+							<input type="text" class="form-control" id="title" placeholder="Type your request"
+								th:field="*{title}" th:errorClass="is-invalid">
+							<div th:if="${#fields.hasErrors('title')}" class="invalid-feedback">
+								<ul>
+									<li th:each="err : ${#fields.errors('title')}" th:text="${err}"></li>
+								</ul>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="exampleFormControlTextarea1" class="form-label">Content</label>
+							<textarea class="form-control" id="description" rows="3" th:field="*{content}"
+								th:errorClass="is-invalid"></textarea>
+							<div th:if="${#fields.hasErrors('content')}" class="invalid-feedback">
+								<ul>
+									<li th:each="err : ${#fields.errors('content')}" th:text="${err}"></li>
+								</ul>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="exampleFormControlTextarea1" class="form-label">Notes</label>
+							<textarea class="form-control" id="notes" rows="3" th:field="*{notes}"
+								th:errorClass="is-invalid"></textarea>
+							<div th:if="${#fields.hasErrors('notes')}" class="invalid-feedback">
+								<ul>
+									<li th:each="err : ${#fields.errors('notes')}" th:text="${err}"></li>
+								</ul>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="customRange3" class="form-label">Priority: <span></span></spanZ></label>
+							<input type="range" class="form-range" th:value="*{priority}" min="1" max="5" step="1"
+								id="priority" th:field="*{priority}"
+								oninput="this.nextElementSibling.value = this.value">
+							<output>[[*{priority}]]</output>
+							<div th:if="${#fields.hasErrors('priority')}" class="invalid-feedback">
+								<ul>
+									<li th:each="err : ${#fields.errors('priority')}" th:text="${err}"></li>
+								</ul>
+							</div>
+						</div>
+
+
+						<div class="form-check mb-3" th:each="category : ${categories}" role="group"
+							aria-label="Basic checkbox toggle button group">
+
+							<input type="checkbox" class="form-check-input" th:id="|category_${category.id}|"
+								autocomplete="off" th:field="*{categories}" th:value="${category.id}">
+							<label class="form-check-label" th:for="|category_${category.id}|"
+								th:text="${category.name}"></label>
+
+						</div>
+
+
+						<div class="mb-3 d-flex justify-content-around">
+							<input type="submit" class="btn btn-primary btn-lg" value="Create ticket">
+							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">
+						</div>
+
+
+
+					</form>
+
+
+
+					<div class="card-body d-flex justify-content-center align-items-center">
+						<a th:href="@{/tickets}" class="btn btn-primary">Back to tickets</a>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer th:replace="~{fragments/fragments :: footer}">
+
+		</footer>
+		<th:block th:replace="~{fragments/fragments :: scripts}"></th:block>
+
+
+	</body>
+
+</html>
