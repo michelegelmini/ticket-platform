@@ -20,6 +20,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "tickets")
@@ -35,6 +36,10 @@ public class Ticket {
 
 	@NotNull
 	private String content;
+	
+	@NotNull
+	@Size(min=1, max=5)
+	private int priority;
 
 	private String notes;
 	
@@ -121,6 +126,46 @@ public class Ticket {
 
 	public void setDeletedAt(LocalTime deletedAt) {
 		this.deletedAt = deletedAt;
+	}
+
+	public int getPriority() {
+		return priority;
+	}
+
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
+	}
+
+	public Operator getOperator() {
+		return operator;
+	}
+
+	public void setOperator(Operator operator) {
+		this.operator = operator;
+	}
+
+	public DateTimeFormatter getDateFormatter() {
+		return dateFormatter;
+	}
+
+	public void setDateFormatter(DateTimeFormatter dateFormatter) {
+		this.dateFormatter = dateFormatter;
 	}
 
 }

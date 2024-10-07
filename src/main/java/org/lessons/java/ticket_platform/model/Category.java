@@ -10,56 +10,43 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "categories")
 public class Category {
-	//variables
-		@Id
-		@GeneratedValue(strategy = GenerationType.IDENTITY)
-		private Integer id;
-		
-		@NotNull
-		@Column(unique=true)
-		private String name;
-		
-		@NotNull
-		@Size(min=1, max=5)
-		private int priority;
-		
-		@ManyToMany(mappedBy = "categories")
-		private List<Ticket> tickets;
+	// variables
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-		public Integer getId() {
-			return id;
-		}
+	@NotNull
+	@Column(unique = true)
+	private String name;
 
-		public void setId(Integer id) {
-			this.id = id;
-		}
+	@ManyToMany(mappedBy = "categories")
+	private List<Ticket> tickets;
 
-		public String getName() {
-			return name;
-		}
+	public Integer getId() {
+		return id;
+	}
 
-		public void setName(String name) {
-			this.name = name;
-		}
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-		public int getPriority() {
-			return priority;
-		}
+	public String getName() {
+		return name;
+	}
 
-		public void setPriority(int priority) {
-			this.priority = priority;
-		}
+	public void setName(String name) {
+		this.name = name;
+	}
 
-		public List<Ticket> getTickets() {
-			return tickets;
-		}
+	public List<Ticket> getTickets() {
+		return tickets;
+	}
 
-		public void setTickets(List<Ticket> tickets) {
-			this.tickets = tickets;
-		}
+	public void setTickets(List<Ticket> tickets) {
+		this.tickets = tickets;
+	}
 }

@@ -25,6 +25,12 @@ public class User {
 	@NotEmpty
 	private String password;
 
+	private String name;
+
+	private String lastName;
+
+	private String picture;
+
 	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<Role> roles;
 
@@ -58,6 +64,30 @@ public class User {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
 	}
 
 }

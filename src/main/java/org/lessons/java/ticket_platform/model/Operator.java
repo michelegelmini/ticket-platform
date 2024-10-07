@@ -4,14 +4,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
-
 @Entity
-public class Operator extends Role{
-	
+public class Operator extends Role {
+
 	private String flag;
-	
+
 	@OneToOne
-	@JoinColumn(name="ticket_id")
+	@JoinColumn(name = "ticket_id")
 	private Ticket ticket;
 
 	public String getFlag() {
@@ -31,4 +30,3 @@ public class Operator extends Role{
 	}
 
 }
-
