@@ -2,6 +2,7 @@ package org.lessons.java.ticket_platform.controller;
 
 import java.util.List;
 
+import org.lessons.java.ticket_platform.model.Category;
 import org.lessons.java.ticket_platform.model.Ticket;
 import org.lessons.java.ticket_platform.service.CategoryService;
 import org.lessons.java.ticket_platform.service.TicketService;
@@ -21,8 +22,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/tickets")
-public class TicketController {
+@RequestMapping("/categories")
+public class CategoryController {
 	
 	@Autowired
 	private TicketService tService;
@@ -31,73 +32,70 @@ public class TicketController {
 	private CategoryService cService;
 	
 	@GetMapping
-	public String index(Model model, @RequestParam(name = "title", required = false) String title) {
+	public String index(Model model, @RequestParam(name = "name", required = false) String name) {
 
-		model.addAttribute("ticketName", title);
+		model.addAttribute("categoryName", name);
 		//model.addAttribute("username", authentication.getName());
 		
-		List<Ticket> ticketList;
+		List<Category> categoryList;
 
-		if (title != null && !title.isEmpty()) {
-			model.addAttribute("ticketTitle", title);
-			ticketList = tService.findByTitle(title);
+		if (name != null && !name.isEmpty()) {
+			model.addAttribute("ticketTitle", name);
+			categoryList = cService.findByName(name);
 
 		} else {
 			// prendo i dati da consegnare a tickets
-			ticketList = tService.findAllSortedById();
+			categoryList = cService.findAllSortedById();
 		}
 
 		// li inserisco nel modello
-		model.addAttribute("tickets", ticketList);
+		model.addAttribute("categories", categoryList);
 
-		return "/tickets/index";
+		return "/categories/index";
 	}
 	
 	//show
-	@GetMapping("/{id}")
-	public String show(@PathVariable("id") Integer ticketId, Model model) {
-		model.addAttribute("ticket", tService.findById(ticketId));
-		return "/tickets/show";
-	}
-	
+//	@GetMapping("/{id}")
+//	public String show(@PathVariable("id") Integer ticketId, Model model) {
+//		model.addAttribute("ticket", tService.findById(ticketId));
+//		return "/tickets/show";
+//	}
+//	
 	//create	
 	@GetMapping("/create")
 	public String create(Model model) {
-		model.addAttribute("ticket", new Ticket());
-		model.addAttribute("categories", cService.findAllSortedById());
-		return "/tickets/create";
+		model.addAttribute("category", new Category());
+		return "/categories/create";
 	}
 	
 	//Store
 	@PostMapping("/create")
-	public String store(@Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult, RedirectAttributes attributes, Model model) {
+	public String store(@Valid @ModelAttribute("ticket") Category formCategory, BindingResult bindingResult, RedirectAttributes attributes, Model model) {
 		
 		if (bindingResult.hasErrors()) {
-			model.addAttribute("categories", cService.findAllSortedById());
+			model.addAttribute("ingredients", cService.findAllSortedById());
 			return "/tickets/create";
 		}
-		tService.create(formTicket);
-		attributes.addFlashAttribute("successMessage", formTicket.getTitle() + " has been created!");
+		cService.create(formCategory);
+		attributes.addFlashAttribute("successMessage", formCategory.getName() + " has been created!");
 		
 		
-		return "redirect:/tickets";
+		return "redirect:/categories";
 	}
 	
 	//edit
 	@GetMapping("/edit/{id}")
 	public String edit(@PathVariable("id") Integer id, Model model) {
 		
-
-		model.addAttribute("ticket", tService.findById(id));
-		model.addAttribute("categories", cService.findAllSortedById());
+		model.addAttribute("category", cService.findById(id));
 		
 		//restituisco la view con il model inserito
-		return "tickets/edit";
+		return "categories/edit";
 	}
 	
 	//update
 	@PostMapping("/edit/{id}")
-	public String update(@Valid @ModelAttribute("ticket") Ticket updatedFormTicket, BindingResult bindingResult, RedirectAttributes attributes, Model model) {
+	public String update(@Valid @ModelAttribute("category") Category updatedFormCategory, BindingResult bindingResult, RedirectAttributes attributes, Model model) {
 		
 		//se ci sono errori nel form, mostra gli errori
 		if (bindingResult.hasErrors()) {
@@ -105,9 +103,9 @@ public class TicketController {
 			return "/tickets/edit";
 		}
 		//altrimenti salva il ticket
-		tService.update(updatedFormTicket);	
+		cService.update(updatedFormCategory);	
 
-		attributes.addFlashAttribute("successMessage", "Ticket with id " + updatedFormTicket.getId() + ": " +updatedFormTicket.getTitle() + ", has been UPDATED!");
+		attributes.addFlashAttribute("successMessage", "Ticket with id " + updatedFormCategory.getId() + ": " +updatedFormCategory.getName() + ", has been UPDATED!");
 		
 		
 		return "redirect:/tickets";
@@ -119,12 +117,12 @@ public class TicketController {
 		
 		//deleteById cerca ed elimina in un unico comando
 		
-		Ticket ticketToDelete = tService.findById(id);
-		tService.delete(id);
+		Category categoryToDelete = cService.findById(id);
+		cService.delete(id);
 		
-		attributes.addFlashAttribute("deletedMessage", "Ticket with id " + id +": " + ticketToDelete.getTitle() + ", has been DELETED!");
+		attributes.addFlashAttribute("deletedMessage", "Ticket with id " + id +": " + categoryToDelete.getName() + ", has been DELETED!");
 		
-		return "redirect:/tickets";
+		return "redirect:/categories";
 	}
 	
 	

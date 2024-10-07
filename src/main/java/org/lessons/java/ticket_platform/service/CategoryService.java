@@ -33,8 +33,8 @@ public class CategoryService {
 		return repository.save(category);
 	}
 	
-	public Optional<Category> findById(Integer id){
-		return repository.findById(id);
+	public Category findById(Integer id){
+		return repository.findById(id).get();
 	}
 	
 	public void delete(Integer id) {

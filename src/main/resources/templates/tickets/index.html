@@ -23,13 +23,13 @@
 						</div>
 					</form>
 
-					<!--create pizza button
-					<th:block sec:authorize="hasAuthority('ADMIN')">
+					<!--create pizza button	-->
+				<!--	<th:block sec:authorize="hasAuthority('ADMIN')">-->
 					<div class="mb-3 d-flex ">
 						<a th:href="@{/tickets/create}" class=" ms-auto me-5 btn btn-lg btn-primary">Add new ticket</a>
 					</div>
 					</th:block>
-					-->
+				
 
 					<!--alert after create/edit		-->
 					<th:block th:if="${successMessage != null}">
@@ -45,7 +45,7 @@
 					<th:block th:if="${tickets.size > 0}">
 
 						<div class="row align-items-center ">
-							<table class="table justify-content-apart table-striped align-middle ">
+							<table class="table justify-content-apart table-striped align-middle">
 								<tr>
 									<th>id</th>
 									<th>Title</th>
@@ -59,10 +59,10 @@
 									<th>[[ *{id} ]]</th>
 									<th>[[ *{title} ]]</th>
 									<th>Stato </th>
-									<th>Categorie
-								<!--		<p class="badge rounded-pill bg-primary" th:each="category : *{categories}"
+									<th>
+										<p class="badge rounded-pill bg-primary" th:each="category : *{categories}"
 											th:text="${category.name}"> 
-										</p> -->
+										</p> 
 									</th>
 									<th>[[ *{priority} ]]</th>
 									<th>nome operatore</th>
