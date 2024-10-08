@@ -5,6 +5,7 @@ import java.util.List;
 import org.lessons.java.ticket_platform.model.Ticket;
 import org.lessons.java.ticket_platform.service.CategoryService;
 import org.lessons.java.ticket_platform.service.TicketService;
+import org.lessons.java.ticket_platform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,11 @@ public class TicketController {
 	
 	@Autowired
 	private CategoryService cService;
+	
+	@Autowired
+	private UserService uService;
+	
+	
 	
 	@GetMapping
 	public String index(Model model, @RequestParam(name = "title", required = false) String title) {
@@ -65,6 +71,8 @@ public class TicketController {
 	public String create(Model model) {
 		model.addAttribute("ticket", new Ticket());
 		model.addAttribute("categories", cService.findAllSortedById());
+		model.addAttribute("users", uService.findAllSortedById());
+
 		return "/tickets/create";
 	}
 	
@@ -74,6 +82,8 @@ public class TicketController {
 		
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("categories", cService.findAllSortedById());
+			model.addAttribute("users", uService.findAllSortedById());
+		
 			return "/tickets/create";
 		}
 		tService.create(formTicket);
@@ -90,6 +100,8 @@ public class TicketController {
 
 		model.addAttribute("ticket", tService.findById(id));
 		model.addAttribute("categories", cService.findAllSortedById());
+		model.addAttribute("users", uService.findAllSortedById());
+		
 		
 		//restituisco la view con il model inserito
 		return "tickets/edit";
@@ -102,6 +114,8 @@ public class TicketController {
 		//se ci sono errori nel form, mostra gli errori
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("categories", cService.findAllSortedById());
+			model.addAttribute("users", uService.findAllSortedById());
+	
 			return "/tickets/edit";
 		}
 		//altrimenti salva il ticket

@@ -31,7 +31,7 @@ public class SecurityConfiguration {
 	}
 
 	@Bean
-	DatabaseUserDetailsService userDetailsService() {
+	DatabaseUserDetailsService usersDetailsService() {
 		return new DatabaseUserDetailsService();
 	}
 
@@ -43,7 +43,7 @@ public class SecurityConfiguration {
 	@Bean
 	DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(userDetailsService());
+		authProvider.setUserDetailsService(usersDetailsService());
 		authProvider.setPasswordEncoder(passwordEncoder());
 		return authProvider;
 

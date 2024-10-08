@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmins:th="http://www.thymeleaf.org">
+
+	<head th:insert="~{fragments/fragments :: head}">
+	</head>
+
+	<body>
+		<header>
+			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+		</header>
+		<main class="container">
+			<div class="row">
+				<div class="col-12">
+					<h1 class="py-4 mb-2 text-center">Editing category</h1>
+
+					<form id="category-form" th:object="${category}" th:action="@{/categories/edit/{id}(id = ${category.id})}" method="POST">
+
+
+						<div class="mb-3">
+							<label for="exampleFormControlInput1" class="form-label">Name</label>
+							<input type="text" class="form-control" id="name" placeholder="Type your request"
+								th:field="*{name}" th:errorClass="is-invalid">
+							<div th:if="${#fields.hasErrors('name')}" class="invalid-feedback">
+								<ul>
+									<li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
+								</ul>
+							</div>
+						</div>
+
+
+						<div class="mb-3 d-flex justify-content-around">
+							<input type="submit" class="btn btn-primary btn-lg" value="Update category">
+							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">
+						</div>
+
+
+
+					</form>
+
+
+
+					<div class="card-body d-flex justify-content-center align-items-center">
+						<a th:href="@{/categories}" class="btn btn-primary">Back to categories</a>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer th:replace="~{fragments/fragments :: footer}">
+
+		</footer>
+		<th:block th:replace="~{fragments/fragments :: scripts}"></th:block>
+
+
+	</body>
+
+</html>

@@ -20,7 +20,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "tickets")
@@ -43,9 +42,7 @@ public class Ticket {
 
 	private String notes;
 	
-	@ManyToOne
-	@JoinColumn(name="status_id")	
-	private Status status;
+	private String status;
 	
 	@ManyToMany()
 	@JoinTable(
@@ -55,9 +52,8 @@ public class Ticket {
 			)
 	private List<Category> categories;
 	
-	@OneToOne
-	@JoinColumn(name="operator_id")
-	private Operator operator;
+	@OneToOne(mappedBy = "ticket")
+	private User user;
 
 	@CreationTimestamp
 	private Timestamp createdAt;
@@ -136,11 +132,11 @@ public class Ticket {
 		this.priority = priority;
 	}
 
-	public Status getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
@@ -152,12 +148,12 @@ public class Ticket {
 		this.categories = categories;
 	}
 
-	public Operator getOperator() {
-		return operator;
+	public User getUser() {
+		return user;
 	}
 
-	public void setOperator(Operator operator) {
-		this.operator = operator;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public DateTimeFormatter getDateFormatter() {

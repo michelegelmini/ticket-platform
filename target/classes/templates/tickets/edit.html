@@ -69,8 +69,19 @@
 								autocomplete="off" th:field="*{categories}" th:value="${category.id}">
 							<label class="form-check-label" th:for="|category_${category.id}|"
 								th:text="${category.name}"></label>
-
 						</div>
+
+						<label for="select_status" class="form-label">Status: </label>
+						<select class="form-select mb-3" id="select_status" aria-label="Default select example"
+							th:field="*{status}">
+
+							<option th:value="'To do'" th:text="'To do'"></option>
+							<option th:value="'In progress'" th:text="'In progress'"></option>
+							<option th:value="'Done'" th:text="'Done'"></option>
+						</select>
+
+					
+
 
 
 						<div class="mb-3 d-flex justify-content-around">
@@ -80,7 +91,12 @@
 
 
 
+
+
 					</form>
+					
+					
+					
 
 
 

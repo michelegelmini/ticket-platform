@@ -58,14 +58,14 @@
 								<tr th:each="ticket : ${tickets}" th:object="${ticket}">
 									<th>[[ *{id} ]]</th>
 									<th>[[ *{title} ]]</th>
-									<th>Stato </th>
+									<th>[[*{status}]] </th>
 									<th>
 										<p class="badge rounded-pill bg-primary" th:each="category : *{categories}"
 											th:text="${category.name}"> 
 										</p> 
 									</th>
 									<th>[[ *{priority} ]]</th>
-									<th>nome operatore</th>
+									<th th:text="${ticket.user}"></th>
 									<th>
 										<a class="btn btn-primary m-1"
 											th:href="@{tickets/{id}(id=${ticket.id})}">Show</a>
