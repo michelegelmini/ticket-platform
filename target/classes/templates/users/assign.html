@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmins:th="http://www.thymeleaf.org">
+
+	<head th:insert="~{fragments/fragments :: head}">
+	</head>
+
+	<body>
+		<header>
+			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+		</header>
+		<main class="container">
+			<div class="row">
+				<div class="col-12">
+					<h1 class="py-4 mb-2 text-center">Assign user to a ticket</h1>
+
+					<form id="assign-form" th:object="${user}" th:action="@{/users}" method="POST">
+						<select class="form-select mb-3">
+							<option th:each="ticket : ${tickets}" th:text="${ticket.title}" th:value="${ticket.title}">
+							</option>
+						</select>
+						
+
+						<div class="mb-3 d-flex justify-content-around">
+							<input type="submit" class="btn btn-primary btn-lg" value="Assign">
+							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">
+						</div>
+					</form>
+
+		</main>
+		<footer th:replace="~{fragments/fragments :: footer}">
+
+		</footer>
+		<th:block th:replace="~{fragments/fragments :: scripts}"></th:block>
+
+
+	</body>
+
+</html>

@@ -30,6 +30,9 @@ public class UserController {
 	@Autowired
 	private UserService uService;
 	
+	@Autowired
+	private TicketService tService;
+	
 	
 	@GetMapping
 	public String index(Model model, @RequestParam(name = "name", required = false) String name) {
@@ -50,6 +53,7 @@ public class UserController {
 
 		// li inserisco nel modello
 		model.addAttribute("users", userList);
+		model.addAttribute("tickets", tService.findAllSortedById());
 
 		return "/users/index";
 	}
@@ -58,6 +62,7 @@ public class UserController {
 	@GetMapping("/{id}")
 	public String show(@PathVariable("id") Integer userId, Model model) {
 		model.addAttribute("user", uService.findById(userId));
+	
 		return "/users/show";
 	}
 	
@@ -90,7 +95,7 @@ public class UserController {
 		
 
 		model.addAttribute("user", uService.findById(id));
-
+		model.addAttribute("tickets", tService.findAllSortedById());
 		
 		//restituisco la view con il model inserito
 		return "users/edit";
@@ -102,10 +107,12 @@ public class UserController {
 		
 		//se ci sono errori nel form, mostra gli errori
 		if (bindingResult.hasErrors()) {
-			model.addAttribute("categories", uService.findAllSortedById());
+			model.addAttribute("users", uService.findAllSortedById());
+			model.addAttribute("tickets", tService.findAllSortedById());
 			return "/users/edit";
 		}
 		//altrimenti salva il user
+		
 		uService.update(updatedFormUser);	
 
 		attributes.addFlashAttribute("successMessage", "User with id " + updatedFormUser.getId() + ": " +updatedFormUser.getUsername() + ", has been UPDATED!");
@@ -127,6 +134,31 @@ public class UserController {
 		
 		return "redirect:/users";
 	}
+	
+	//assignTicket
+//	@GetMapping("/assign/{tId}/to/{uId}")
+//	public String assignTicket(@PathVariable("tId") Integer ticketId, @PathVariable("uId") Integer userId, Model model) {
+//		Ticket ticketToAssign = tService.findById(ticketId);
+//		User userToAssign = uService.findById(userId);
+//		ticketToAssign.setUser(userToAssign);
+//		model.addAttribute("ticket", ticketToAssign);
+//		model.addAttribute("user", userToAssign);
+//	
+//		return "redirect:/users";
+//	
+//	}
+//	@GetMapping("/assign/{tId}")
+//	public String assignTicket(@PathVariable("tId") Integer ticketId, Model model) {
+//	
+//		Ticket ticketToAssign = tService.findById(ticketId);
+//	
+//		model.addAttribute("user", userToAssign);
+//		model.addAttribute("tickets", tService.findAllSortedById());
+//	
+//		return "users/assign";
+//	
+//	}
+
 	
 	
 

@@ -69,7 +69,9 @@ public class TicketController {
 	//create	
 	@GetMapping("/create")
 	public String create(Model model) {
-		model.addAttribute("ticket", new Ticket());
+		Ticket newTicket = new Ticket();
+		newTicket.setStatus("To do");
+		model.addAttribute("ticket", newTicket);
 		model.addAttribute("categories", cService.findAllSortedById());
 		model.addAttribute("users", uService.findAllSortedById());
 
@@ -86,6 +88,7 @@ public class TicketController {
 		
 			return "/tickets/create";
 		}
+		formTicket.setStatus("To do");
 		tService.create(formTicket);
 		attributes.addFlashAttribute("successMessage", formTicket.getTitle() + " has been created!");
 		

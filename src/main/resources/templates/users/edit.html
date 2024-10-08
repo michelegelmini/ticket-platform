@@ -12,25 +12,18 @@
 		<main class="container">
 			<div class="row">
 				<div class="col-12">
-					<h1 class="py-4 mb-2 text-center">Editing category</h1>
+					<h1 class="py-4 mb-2 text-center">Editing user [[${user.username}]]</h1>
 
-					<form id="category-form" th:object="${category}" th:action="@{/categories/edit/{id}(id = ${category.id})}" method="POST">
-
-
+					<form id="user-form" th:object="${user}" th:action="@{/users/edit/{id}(id = ${user.id})}"
+						method="POST">
 						<div class="mb-3">
-							<label for="exampleFormControlInput1" class="form-label">Name</label>
-							<input type="text" class="form-control" id="name" placeholder="Type your request"
-								th:field="*{name}" th:errorClass="is-invalid">
-							<div th:if="${#fields.hasErrors('name')}" class="invalid-feedback">
-								<ul>
-									<li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
-								</ul>
-							</div>
+							<select class="form-select" th:field="${user.tickets}">
+								<option th:each="ticket : ${tickets}" th:text="${ticket.title}" th:value="${ticket.id}">
+								</option>
+							</select>
 						</div>
-
-
 						<div class="mb-3 d-flex justify-content-around">
-							<input type="submit" class="btn btn-primary btn-lg" value="Update category">
+							<input type="submit" class="btn btn-primary btn-lg" value="Update user">
 							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">
 						</div>
 
@@ -41,7 +34,7 @@
 
 
 					<div class="card-body d-flex justify-content-center align-items-center">
-						<a th:href="@{/categories}" class="btn btn-primary">Back to categories</a>
+						<a th:href="@{/users}" class="btn btn-primary">Back to users</a>
 					</div>
 				</div>
 			</div>

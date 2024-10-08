@@ -8,7 +8,9 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,24 +37,21 @@ public class Ticket {
 
 	@NotNull
 	private String content;
-	
+
 	@NotNull
-	//@Size(min=1, max=5, message = "{ticket.priority.invalid}")
+	// @Size(min=1, max=5, message = "{ticket.priority.invalid}")
 	private int priority;
 
 	private String notes;
-	
+
 	private String status;
-	
+
 	@ManyToMany()
-	@JoinTable(
-			name = "tickets_categories",
-			joinColumns = @JoinColumn(name = "ticket_id"),
-			inverseJoinColumns = @JoinColumn(name = "category_id")
-			)
+	@JoinTable(name = "tickets_categories", joinColumns = @JoinColumn(name = "ticket_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private List<Category> categories;
-	
-	@OneToOne(mappedBy = "ticket")
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
 	private User user;
 
 	@CreationTimestamp
@@ -63,7 +62,7 @@ public class Ticket {
 
 	@UpdateTimestamp
 	private LocalTime deletedAt;
-	
+
 	@Transient
 	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm dd-MM-yyyy");
 

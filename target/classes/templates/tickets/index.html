@@ -24,12 +24,12 @@
 					</form>
 
 					<!--create pizza button	-->
-				<!--	<th:block sec:authorize="hasAuthority('ADMIN')">-->
+					<!--	<th:block sec:authorize="hasAuthority('ADMIN')">-->
 					<div class="mb-3 d-flex ">
 						<a th:href="@{/tickets/create}" class=" ms-auto me-5 btn btn-lg btn-primary">Add new ticket</a>
 					</div>
 					</th:block>
-				
+
 
 					<!--alert after create/edit		-->
 					<th:block th:if="${successMessage != null}">
@@ -38,7 +38,7 @@
 					<th:block th:if="${deletedMessage != null}">
 						<div th:insert="~{fragments/fragments :: deletedAlert(${deletedMessage})}"></div>
 					</th:block>
-			
+
 
 
 					<!--ticket view-->
@@ -61,17 +61,24 @@
 									<th>[[*{status}]] </th>
 									<th>
 										<p class="badge rounded-pill bg-primary" th:each="category : *{categories}"
-											th:text="${category.name}"> 
-										</p> 
+											th:text="${category.name}">
+										</p>
 									</th>
 									<th>[[ *{priority} ]]</th>
-									<th th:text="${ticket.user}"></th>
+									<th:block th:unless="${ticket.user == null}">
+										<th th:text="${ticket.user.username}"></th>
+									</th:block>
+									<th:block th:if="${ticket.user == null}">
+										<th th:text="'To be assigned'"></th>
+									</th:block>
 									<th>
 										<a class="btn btn-primary m-1"
 											th:href="@{tickets/{id}(id=${ticket.id})}">Show</a>
 
 										<a class="btn btn-success m-1"
 											th:href="@{tickets/edit/{id}(id=${ticket.id})}">Edit</a>
+											
+										
 
 										<!-- Button trigger modal -->
 										<button type="button" class="btn btn-warning m-1" data-bs-toggle="modal"

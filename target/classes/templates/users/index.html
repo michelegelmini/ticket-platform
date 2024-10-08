@@ -51,8 +51,9 @@
 									<th>id</th>
 									<th>Name</th>
 									<th>Last Name</th>
-									<th>Username</th>
+									<th>Test</th>
 									<th>Buttons</th>
+									<th>Flag</th>
 								</tr>
 								<tr th:each="user : ${users}" th:object="${user}">
 									<th>[[ *{id} ]]</th>
@@ -60,8 +61,6 @@
 									<th>[[*{lastName}]]</th>
 									<th>[[*{username}]]</th>
 									<th>
-										
-
 										<a class="btn btn-success m-1"
 											th:href="@{users/edit/{id}(id=${user.id})}">Edit</a>
 										<!-- Button trigger modal -->
@@ -97,13 +96,20 @@
 
 									</th>
 
+									<th:block th:unless="*{tickets.empty}">
+										<th>Working on ticket [[${user.tickets.last.getId()}]]: [[${user.tickets.last.getTitle()}]]</th>
+									</th:block>
+									<th:block th:if="*{tickets.empty}">
+									<th>
+										<a class="btn btn-primary" th:href="@{users/edit/{id}(id=${user.id})}">Assign a Ticket</a>
+										
+										</th>
+									</th:block>
 
 								</tr>
 
 							</table>
 						</div>
-
-
 
 					</th:block>
 					<th:block th:unless="${users.size > 0}">
