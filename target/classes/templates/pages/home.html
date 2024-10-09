@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmins:th="http://www.thymeleaf.org">
+
+	<head th:insert="~{fragments/fragments :: head}">
+	</head>
+
+	<body>
+		<header>
+			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+		</header>
+		<main>
+			<div class="container">
+				<div class="row text-center mt-2">
+					<h1>Homepage</h1>
+				</div>
+
+			</div>
+
+		</main>
+		<footer th:replace="~{fragments/fragments :: footer}">
+
+		</footer>
+		<th:block th:replace="~{fragments/fragments :: scripts}"></th:block>
+
+
+	</body>
+
+</html>

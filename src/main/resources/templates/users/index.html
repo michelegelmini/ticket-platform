@@ -16,15 +16,15 @@
 					<!--search bar-->
 					<form th:action="@{/users}" method="GET">
 						<div class="input-group input-group-sm mb-3">
-							<span class="input-group-text" id="inputGroup-sizing-sm">Search for user by name</span>
-							<input type="text" class="form-control" name="name">
+							<span class="input-group-text" id="inputGroup-sizing-sm">Search user by username</span>
+							<input type="text" class="form-control" name="username">
 							<input type="submit" class="form-control btn btn-sm btn-success">
 
 						</div>
 					</form>
 
-					<!--create pizza button	-->
-					<!--	<th:block sec:authorize="hasAuthority('ADMIN')">-->
+					<!--create user button	-->
+				<th:block sec:authorize="hasAuthority('ADMIN')">
 					<div class="mb-3 d-flex ">
 						<a th:href="@{/users/create}" class=" ms-auto me-5 btn btn-lg btn-primary">Add new
 							user</a>
@@ -51,9 +51,9 @@
 									<th>id</th>
 									<th>Name</th>
 									<th>Last Name</th>
-									<th>Test</th>
+									<th>Username</th>
 									<th>Buttons</th>
-									<th>Flag</th>
+									<th>Status</th>
 								</tr>
 								<tr th:each="user : ${users}" th:object="${user}">
 									<th>[[ *{id} ]]</th>
@@ -61,48 +61,58 @@
 									<th>[[*{lastName}]]</th>
 									<th>[[*{username}]]</th>
 									<th>
+										<a class="btn btn-primary m-1" th:href="@{users/{id}(id=${user.id})}">Show</a>
 										<a class="btn btn-success m-1"
 											th:href="@{users/edit/{id}(id=${user.id})}">Edit</a>
-										<!-- Button trigger modal -->
-										<button type="button" class="btn btn-warning m-1" data-bs-toggle="modal"
-											th:data-bs-target="'#delete-modal-' + ${user.id}">
-											Delete
-										</button>
-										<!-- Modal -->
-										<div class="modal fade" tabindex="-1" th:id="'delete-modal-' + ${user.id}">
-											<div class="modal-dialog modal-dialog-centered">
-												<div class="modal-content">
-													<div class="modal-header">
-														<h5 class="modal-title">Confirm delete</h5>
-														<button type="button" class="btn-close" data-bs-dismiss="modal"
-															aria-label="Close"></button>
-													</div>
-													<div class="modal-body">
-														<p>Confirm delete of [[${user.name}]]?</p>
-													</div>
-													<div class="modal-footer">
-														<button type="button" class="btn btn-secondary"
-															data-bs-dismiss="modal">Close</button>
-														<form class="d-inline-block"
-															th:action="@{users/delete/{id}(id=${user.id})}"
-															method="POST">
-															<button type="submit"
-																class="btn btn-danger m-1">Delete</button>
-														</form>
+										<th:block th:if="${user.isAvailable()}">
+											<!-- Button trigger modal -->
+									<!--		<button type="button" class="btn btn-warning m-1" data-bs-toggle="modal"
+												th:data-bs-target="'#delete-modal-' + ${user.id}">
+												Delete
+											</button> -->
+											<!-- Modal -->
+											
+									<!--		<div class="modal fade" tabindex="-1" th:id="'delete-modal-' + ${user.id}">
+												<div class="modal-dialog modal-dialog-centered">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title">Confirm delete</h5>
+															<button type="button" class="btn-close"
+																data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															<p>Confirm delete of [[${user.name}]]?</p>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-secondary"
+																data-bs-dismiss="modal">Close</button>
+															<form class="d-inline-block"
+																th:action="@{users/delete/{id}(id=${user.id})}"
+																method="POST">
+																<button type="submit"
+																	class="btn btn-danger m-1">Delete</button>
+															</form>
+														</div>
 													</div>
 												</div>
-											</div>
-										</div>
-
+										<th:block th:unless="${user.isAvailable()}">
+											<button type="button" class="btn btn-warning m-1" disabled>
+												Delete
+											</button>
+										</th:block>
+											</div>-->
+										</th:block>
 									</th>
 
-									<th:block th:unless="*{tickets.empty}">
-										<th>Working on ticket [[${user.tickets.last.getId()}]]: [[${user.tickets.last.getTitle()}]]</th>
+									<th:block th:unless="*{isAvailable}">
+										<th>Working on ticket [[${user.tickets.last.getId()}]]:
+											[[${user.tickets.last.getTitle()}]]</th>
 									</th:block>
-									<th:block th:if="*{tickets.empty}">
-									<th>
-										<a class="btn btn-primary" th:href="@{users/assign/{id}(id=${user.id})}">Assign a Ticket</a>
-										
+									<th:block th:if="*{isAvailable}">
+										<th>
+											<a class="btn btn-primary"
+												th:href="@{users/assign/{id}(id=${user.id})}">Assign a Ticket</a>
+
 										</th>
 									</th:block>
 

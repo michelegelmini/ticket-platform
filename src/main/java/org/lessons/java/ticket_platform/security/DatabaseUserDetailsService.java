@@ -38,7 +38,7 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 	}
 
 	public List<User> findByUsername(String username) {
-		return (List<User>) userRepository.findByUsernameContainingIgnoreCaseOrderByIdAsc(username).get();
+		return (List<User>) userRepository.findByUsernameContainingIgnoreCaseOrderByIdAsc(username);
 	}
 
 	public User create(User user) {
@@ -56,5 +56,7 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 	public void delete(Integer id) {
 		userRepository.deleteById(id);
 	}
+	
+	
 	
 }

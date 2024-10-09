@@ -45,8 +45,10 @@
 							<select class="form-select mb-3" id="select_status" aria-label="Default select example"
 								name="status">
 								<option disabled selected value> -- select an option -- </option>
-								<option th:value="'To do'" th:text="'To do'"></option>
-								<option th:value="'In progress'" th:text="'In progress'"></option>
+								<th:block sec:authorize="hasAuthority('ADMIN')">
+									<option th:value="'To do'" th:text="'To do'"></option>
+								</th:block>
+								<option th:value="'Doing'" th:text="'Doing'"></option>
 								<option th:value="'Done'" th:text="'Done'"></option>
 							</select>
 							<input type="submit" class="form-control btn btn-sm btn-success">
@@ -57,11 +59,12 @@
 
 
 
-					<!--create pizza button	-->
-					<!--	<th:block sec:authorize="hasAuthority('ADMIN')">-->
-					<div class="mb-3 d-flex ">
-						<a th:href="@{/tickets/create}" class=" ms-auto me-5 btn btn-lg btn-primary">Add new ticket</a>
-					</div>
+					<!--create ticket button	-->
+					<th:block sec:authorize="hasAuthority('ADMIN')">
+						<div class="mb-3 d-flex">
+							<a th:href="@{/tickets/create}" class=" ms-auto me-5 btn btn-lg btn-primary">Add new
+								ticket</a>
+						</div>
 					</th:block>
 
 
@@ -79,73 +82,92 @@
 					<th:block th:if="${tickets.size > 0}">
 
 						<div class="row align-items-center ">
-							<table class="table justify-content-apart table-striped align-middle">
+							<table class="table justify-content-apart table-striped align-middle table-responsive">
 								<tr>
 									<th>id</th>
 									<th>Title</th>
 									<th>Status</th>
 									<th>Category</th>
+									<th>Created At</th>
+									<th>Last Update</th>
 									<th>Priority</th>
 									<th>Operator</th>
 									<th>Buttons</th>
+
 								</tr>
 								<tr th:each="ticket : ${tickets}" th:object="${ticket}">
 									<th>[[ *{id} ]]</th>
 									<th>[[ *{title} ]]</th>
-									<th>[[*{status}]] </th>
+									<th>[[*{getStatus()}]] </th>
 									<th>
 										<p class="badge rounded-pill bg-primary" th:text="${ticket.category.name}">
 										</p>
 									</th>
+									<th>[[*{getFormattedCreatedAt()}]]</th>
+									<th>[[*{getFormattedUpdatedAt()}]]</th>
 									<th>[[ *{priority} ]]</th>
-									<th:block th:unless="${ticket.user == null}">
-										<th th:text="${ticket.user.username}"></th>
+
+									<th:block th:if="${ticket.status.equals('Done') and ticket.user != null}">
+										<th>Closed by [[${ticket.user.username}]]</th>
 									</th:block>
-									<th:block th:if="${ticket.user == null}">
-										<th th:text="'To be assigned'"></th>
+									<th:block th:unless="${ticket.status.equals('Done')}">
+										<th:block th:unless="${ticket.user == null}">
+											<th th:text="${ticket.user.username}"></th>
+										</th:block>
+										<th:block th:if="${ticket.user == null}">
+											<th th:text="'To be assigned'"></th>
+										</th:block>
 									</th:block>
-									<th>
-										<a class="btn btn-primary m-1"
-											th:href="@{tickets/{id}(id=${ticket.id})}">Show</a>
+									<th:block sec:authorize="hasAuthority('ADMIN')">
+										<th>
+											<a class="btn btn-primary m-1"
+												th:href="@{tickets/{id}(id=${ticket.id})}">Show</a>
 
-										<a class="btn btn-success m-1"
-											th:href="@{tickets/edit/{id}(id=${ticket.id})}">Edit</a>
+											<a class="btn btn-success m-1"
+												th:href="@{tickets/edit/{id}(id=${ticket.id})}">Edit</a>
 
 
 
-										<!-- Button trigger modal -->
-										<button type="button" class="btn btn-warning m-1" data-bs-toggle="modal"
-											th:data-bs-target="'#delete-modal-' + ${ticket.id}">
-											Delete
-										</button>
-										<!-- Modal -->
-										<div class="modal fade" tabindex="-1" th:id="'delete-modal-' + ${ticket.id}">
-											<div class="modal-dialog modal-dialog-centered">
-												<div class="modal-content">
-													<div class="modal-header">
-														<h5 class="modal-title">Confirm delete</h5>
-														<button type="button" class="btn-close" data-bs-dismiss="modal"
-															aria-label="Close"></button>
-													</div>
-													<div class="modal-body">
-														<p>Confirm delete of [[${ticket.title}]]?</p>
-													</div>
-													<div class="modal-footer">
-														<button type="button" class="btn btn-secondary"
-															data-bs-dismiss="modal">Close</button>
-														<form class="d-inline-block"
-															th:action="@{tickets/delete/{id}(id=${ticket.id})}"
-															method="POST">
-															<button type="submit"
-																class="btn btn-danger m-1">Delete</button>
-														</form>
+											<!-- Button trigger modal -->
+											<button type="button" class="btn btn-warning m-1" data-bs-toggle="modal"
+												th:data-bs-target="'#delete-modal-' + ${ticket.id}">
+												Delete
+											</button>
+											<!-- Modal -->
+											<div class="modal fade" tabindex="-1"
+												th:id="'delete-modal-' + ${ticket.id}">
+												<div class="modal-dialog modal-dialog-centered">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title">Confirm delete</h5>
+															<button type="button" class="btn-close"
+																data-bs-dismiss="modal" aria-label="Close"></button>
+														</div>
+														<div class="modal-body">
+															<p>Confirm delete of [[${ticket.title}]]?</p>
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-secondary"
+																data-bs-dismiss="modal">Close</button>
+															<form class="d-inline-block"
+																th:action="@{tickets/delete/{id}(id=${ticket.id})}"
+																method="POST">
+																<button type="submit"
+																	class="btn btn-danger m-1">Delete</button>
+															</form>
+														</div>
 													</div>
 												</div>
 											</div>
-										</div>
 
 
-									</th>
+										</th>
+									</th:block>
+									<th:block sec:authorize="hasAuthority('USER')">
+
+										<th><a class="btn btn-primary m-1"
+												th:href="@{tickets/{id}(id=${ticket.id})}">Show</a></th>
+									</th:block>
 								</tr>
 
 							</table>

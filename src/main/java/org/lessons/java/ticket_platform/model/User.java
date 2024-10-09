@@ -44,12 +44,12 @@ public class User {
 
 	private String picture;
 
+	private boolean isAvailable;
+
 	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<Role> roles;
 
-	private String flag;
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	private List<Ticket> tickets;
 //	@Formula("(SELECT tickets.id"
 //			+ "from tickets "
@@ -111,13 +111,29 @@ public class User {
 	public void setPicture(String picture) {
 		this.picture = picture;
 	}
-
-	public String getFlag() {
-		return flag;
+	
+	public void setAvailability() {
+		for (Ticket ticket : tickets) {
+			String statusToCheck = ticket.getStatus();
+			if (statusToCheck.equals("Doing")) {
+				this.setAvailable(false);		
+			} 
+		}
+		this.setAvailable(true);	
 	}
 
-	public void setFlag(String flag) {
-		this.flag = flag;
+	public boolean isAvailable() {
+		for (Ticket ticket : tickets) {
+			String statusToCheck = ticket.getStatus();
+			if (statusToCheck.equals("Doing")) {
+				return false;		
+			} 
+		}
+		return true;			
+	}
+
+	public void setAvailable(boolean isAvailable) {
+		this.isAvailable = isAvailable;
 	}
 
 	public String getFirstName() {
@@ -135,10 +151,10 @@ public class User {
 	public void setTickets(List<Ticket> tickets) {
 		this.tickets = tickets;
 	}
-	
+
 	public void addTicket(Ticket ticket) {
-        this.tickets.add(ticket);
-        ticket.setUser(this);
-    }
+		this.tickets.add(ticket);
+		ticket.setUser(this);
+	}
 
 }

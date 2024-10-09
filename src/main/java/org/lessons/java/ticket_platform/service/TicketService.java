@@ -45,5 +45,21 @@ public class TicketService {
 	public List<Ticket> findByStatus(String status){
 		return repository.findByStatusContainingIgnoreCaseOrderByIdAsc(status);
 	}
+	
+	public List<Ticket> findByUser(int userId){
+		return repository.findByUserId(userId);
+	}
+	
+	public List<Ticket> findByUserAndTitle(int userId, String title){
+		return repository.findByUserIdAndTitleContainingIgnoreCaseOrderByIdAsc(userId, title);
+	}
+	
+	public List<Ticket> findByUserAndCategory(int userId, String category){
+		return repository.findByUserIdAndCategoryNameContainingIgnoreCaseOrderByIdAsc(userId, category);
+	}
+	
+	public List<Ticket> findByUserAndStatus(int userId, String status){
+		return repository.findByUserIdAndStatusContainingIgnoreCaseOrderByIdAsc(userId, status);
+	}
 
 }

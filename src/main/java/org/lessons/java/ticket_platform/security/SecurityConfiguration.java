@@ -19,12 +19,13 @@ public class SecurityConfiguration {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requests -> requests
-                .requestMatchers("/pizzas/edit/*", "/pizzas/create").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/pizzas/**").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/specialOffers/**").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/ingredients/**").hasAuthority("ADMIN")
-                .requestMatchers("/specialOffers").hasAuthority("ADMIN").requestMatchers("/ingredients").hasAuthority("ADMIN")
-                .requestMatchers("/pizzas", "pizzas/*").hasAnyAuthority("ADMIN", "USER")
+        		.requestMatchers("/tickets/create").hasAuthority("ADMIN")
+                .requestMatchers("/tickets/edit/*").hasAnyAuthority("ADMIN", "USER")
+                .requestMatchers(HttpMethod.POST, "/tickets/**", "/tickets/edit/**").hasAnyAuthority("ADMIN", "USER")
+                .requestMatchers(HttpMethod.POST, "/users/**").hasAnyAuthority("ADMIN", "USER")
+                .requestMatchers(HttpMethod.POST, "/categories/**").hasAuthority("ADMIN")
+                .requestMatchers("/users").hasAnyAuthority("ADMIN", "USER").requestMatchers("/categories").hasAuthority("ADMIN")
+                .requestMatchers("/tickets", "tickets/*").hasAnyAuthority("ADMIN", "USER")
                 .requestMatchers("/**").permitAll()
                 .requestMatchers("/webjars/**").permitAll()).formLogin(withDefaults()).logout(withDefaults()).exceptionHandling(withDefaults()).csrf().disable();
 		return http.build();

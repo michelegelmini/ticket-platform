@@ -12,5 +12,13 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer>{
 	public List<Ticket>findByCategoryNameContainingIgnoreCaseOrderByIdAsc(String category);
 	
 	public List<Ticket>findByStatusContainingIgnoreCaseOrderByIdAsc(String status);
+	
+	public List<Ticket>findByUserId(int userId);
+	
+	public List<Ticket>findByUserIdAndTitleContainingIgnoreCaseOrderByIdAsc(int userId, String title);
+	
+	public List<Ticket>findByUserIdAndCategoryNameContainingIgnoreCaseOrderByIdAsc(int userId, String category);
+	
+	public List<Ticket>findByUserIdAndStatusContainingIgnoreCaseOrderByIdAsc(int userId, String status);
 
 }

@@ -68,22 +68,12 @@
 								</option>
 							</select>
 						</div>
-						<div>
-							<label for="select_status" class="form-label">Status: </label>
-							<select class="form-select mb-3" id="select_status" aria-label="Default select example"
-								th:field="*{status}">
-
-								<option th:value="'To do'" th:text="'To do'"></option>
-								<option th:value="'In progress'" th:text="'In progress'"></option>
-								<option th:value="'Done'" th:text="'Done'"></option>
-							</select>
-						</div>
-						<div>
+					<!--	<div>
 							<select class="form-select mb-3" th:field="*{user}">
 								<option th:each="user : ${users}" th:text="${user.username}" th:value="${user.id}">
 								</option>
 							</select>
-						</div>
+						</div>-->
 						<div class="mb-3 d-flex justify-content-around">
 							<input type="submit" class="btn btn-primary btn-lg" value="Update ticket">
 							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">

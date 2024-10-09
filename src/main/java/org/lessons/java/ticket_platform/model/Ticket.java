@@ -8,17 +8,15 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
@@ -32,17 +30,13 @@ public class Ticket {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-
 	private String title;
-
 
 	private String content;
 
 	@NotNull
 	// @Size(min=1, max=5, message = "{ticket.priority.invalid}")
 	private int priority;
-
-	private String notes;
 
 	private String status;
 
@@ -53,8 +47,12 @@ public class Ticket {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
+	
+	@OneToMany(mappedBy = "ticket")
+	private List<Note> notes;
 
 	@CreationTimestamp
+	@Column(name = "created_at", updatable = false)
 	private Timestamp createdAt;
 
 	@UpdateTimestamp
@@ -64,7 +62,7 @@ public class Ticket {
 	private LocalTime deletedAt;
 
 	@Transient
-	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm dd-MM-yyyy");
+	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm | dd-MM-yyyy");
 
 //getters and setters	
 	public Integer getId() {
@@ -91,11 +89,11 @@ public class Ticket {
 		this.content = content;
 	}
 
-	public String getNotes() {
+	public List<Note> getNotes() {
 		return notes;
 	}
 
-	public void setNotes(String notes) {
+	public void setNotes(List<Note> notes) {
 		this.notes = notes;
 	}
 
@@ -103,9 +101,9 @@ public class Ticket {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
-	}
+//	public void setCreatedAt(Timestamp createdAt) {
+//		this.createdAt = createdAt;
+//	}
 
 	public Timestamp getUpdatedAt() {
 		return updatedAt;
@@ -129,6 +127,15 @@ public class Ticket {
 
 	public void setPriority(int priority) {
 		this.priority = priority;
+	}
+
+	public void setDoingStatus() {
+		if (user == null || user.getId() == null) {
+			this.setStatus("To do");
+		} else {
+			this.setStatus("Doing");
+		}
+		System.out.println("Status set to: " + this.getStatus());
 	}
 
 	public String getStatus() {
@@ -161,6 +168,18 @@ public class Ticket {
 
 	public void setDateFormatter(DateTimeFormatter dateFormatter) {
 		this.dateFormatter = dateFormatter;
+	}
+
+	public String getFormattedCreatedAt() {
+		return createdAt.toLocalDateTime().format(dateFormatter);
+	}
+
+	public String getFormattedUpdatedAt() {
+		if(this.updatedAt != null) {
+		return updatedAt.toLocalDateTime().format(dateFormatter);
+		} else {
+			return null;
+		}
 	}
 
 }
