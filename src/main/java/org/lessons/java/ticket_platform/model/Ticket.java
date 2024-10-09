@@ -32,10 +32,10 @@ public class Ticket {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@NotNull
+
 	private String title;
 
-	@NotNull
+
 	private String content;
 
 	@NotNull
@@ -46,9 +46,9 @@ public class Ticket {
 
 	private String status;
 
-	@ManyToMany()
-	@JoinTable(name = "tickets_categories", joinColumns = @JoinColumn(name = "ticket_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
-	private List<Category> categories;
+	@ManyToOne
+	@JoinColumn(name = "category_id")
+	private Category category;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
@@ -139,12 +139,12 @@ public class Ticket {
 		this.status = status;
 	}
 
-	public List<Category> getCategories() {
-		return categories;
+	public Category getCategory() {
+		return category;
 	}
 
-	public void setCategories(List<Category> categories) {
-		this.categories = categories;
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	public User getUser() {

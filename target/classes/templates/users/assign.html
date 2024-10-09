@@ -12,21 +12,37 @@
 		<main class="container">
 			<div class="row">
 				<div class="col-12">
-					<h1 class="py-4 mb-2 text-center">Assign user to a ticket</h1>
+					<h1 class="py-4 mb-2 text-center">Assign a Ticket to user [[${user.username}]]</h1>
 
-					<form id="assign-form" th:object="${user}" th:action="@{/users}" method="POST">
-						<select class="form-select mb-3">
-							<option th:each="ticket : ${tickets}" th:text="${ticket.title}" th:value="${ticket.title}">
-							</option>
-						</select>
-						
-
+					<form id="user-form" th:object="${user}" th:action="@{/users/{id}/assign-ticket(id = ${user.id})}"
+						method="POST">
+						<div class="mb-3">
+							<select class="form-select" name="ticketId" required>
+								<option th:each="ticket : ${tickets}" th:text="${ticket.title}" th:value="${ticket.id}">
+								</option>
+							</select>
+							<input type="hidden" th:value="*{username}" th:field="*{username}">
+							<input type="hidden" th:value="*{password}" th:field="*{password}">
+							<input type="hidden" th:value="*{name}" th:field="*{name}">
+							<input type="hidden" th:value="*{lastName}" th:field="*{lastName}">
+					
+						</div>
 						<div class="mb-3 d-flex justify-content-around">
-							<input type="submit" class="btn btn-primary btn-lg" value="Assign">
+							<input type="submit" class="btn btn-primary btn-lg" value="Update user">
 							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">
 						</div>
+
+
+
 					</form>
 
+
+
+					<div class="card-body d-flex justify-content-center align-items-center">
+						<a th:href="@{/users}" class="btn btn-primary">Back to users</a>
+					</div>
+				</div>
+			</div>
 		</main>
 		<footer th:replace="~{fragments/fragments :: footer}">
 

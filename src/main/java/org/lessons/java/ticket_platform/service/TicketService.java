@@ -37,5 +37,13 @@ public class TicketService {
 	public void delete(Integer id) {
 		repository.deleteById(id);
 	}
+	
+	public List<Ticket> findByCategory(String category) {
+		return repository.findByCategoryNameContainingIgnoreCaseOrderByIdAsc(category);
+	}
+	
+	public List<Ticket> findByStatus(String status){
+		return repository.findByStatusContainingIgnoreCaseOrderByIdAsc(status);
+	}
 
 }

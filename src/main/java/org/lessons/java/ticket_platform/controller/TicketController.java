@@ -2,6 +2,7 @@ package org.lessons.java.ticket_platform.controller;
 
 import java.util.List;
 
+import org.lessons.java.ticket_platform.model.Category;
 import org.lessons.java.ticket_platform.model.Ticket;
 import org.lessons.java.ticket_platform.service.CategoryService;
 import org.lessons.java.ticket_platform.service.TicketService;
@@ -37,9 +38,10 @@ public class TicketController {
 	
 	
 	@GetMapping
-	public String index(Model model, @RequestParam(name = "title", required = false) String title) {
+	public String index(Model model, @RequestParam(name = "title", required = false) String title, @RequestParam(name = "category", required = false) Category category, @RequestParam(name = "status", required = false) String status) {
 
 		model.addAttribute("ticketName", title);
+		model.addAttribute("categories", cService.findAllSortedById());
 		//model.addAttribute("username", authentication.getName());
 		
 		List<Ticket> ticketList;
@@ -48,6 +50,13 @@ public class TicketController {
 			model.addAttribute("ticketTitle", title);
 			ticketList = tService.findByTitle(title);
 
+		} else if (category != null) {
+			model.addAttribute("category", category);
+			ticketList = tService.findByCategory(category.getName());
+			
+		} else if (status != null && !status.isEmpty()) {
+			model.addAttribute("status", status);
+			ticketList = tService.findByStatus(status);
 		} else {
 			// prendo i dati da consegnare a tickets
 			ticketList = tService.findAllSortedById();

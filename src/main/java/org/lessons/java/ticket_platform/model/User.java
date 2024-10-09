@@ -50,11 +50,11 @@ public class User {
 	private String flag;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@Formula("(SELECT tickets.id"
-			+ "from tickets "
-			+ "INNER JOIN users on users.id = tickets.user_id "
-			+ "WHERE ticket.user_id = id);")
 	private List<Ticket> tickets;
+//	@Formula("(SELECT tickets.id"
+//			+ "from tickets "
+//			+ "INNER JOIN users on users.id = tickets.user_id "
+//			+ "WHERE ticket.user_id = id);")
 
 	public Integer getId() {
 		return id;
@@ -135,5 +135,10 @@ public class User {
 	public void setTickets(List<Ticket> tickets) {
 		this.tickets = tickets;
 	}
+	
+	public void addTicket(Ticket ticket) {
+        this.tickets.add(ticket);
+        ticket.setUser(this);
+    }
 
 }

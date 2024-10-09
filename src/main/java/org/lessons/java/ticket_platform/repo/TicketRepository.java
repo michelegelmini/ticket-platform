@@ -8,5 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface TicketRepository extends JpaRepository<Ticket, Integer>{
 	
 	public List<Ticket>findByTitleContainingIgnoreCaseOrderByIdAsc(String title);
+	
+	public List<Ticket>findByCategoryNameContainingIgnoreCaseOrderByIdAsc(String category);
+	
+	public List<Ticket>findByStatusContainingIgnoreCaseOrderByIdAsc(String status);
 
 }

@@ -8,6 +8,7 @@ import org.lessons.java.ticket_platform.model.User;
 import org.lessons.java.ticket_platform.service.TicketService;
 import org.lessons.java.ticket_platform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -93,7 +96,6 @@ public class UserController {
 	@GetMapping("/edit/{id}")
 	public String edit(@PathVariable("id") Integer id, Model model) {
 		
-
 		model.addAttribute("user", uService.findById(id));
 		model.addAttribute("tickets", tService.findAllSortedById());
 		
@@ -103,17 +105,17 @@ public class UserController {
 	
 	//update
 	@PostMapping("/edit/{id}")
-	public String update(@Valid @ModelAttribute("user") User updatedFormUser, BindingResult bindingResult, RedirectAttributes attributes, Model model) {
+	public String update(@Valid @ModelAttribute("user") User updatedFormUser, Ticket ticket, RedirectAttributes attributes, Model model) {
 		
-		//se ci sono errori nel form, mostra gli errori
-		if (bindingResult.hasErrors()) {
-			model.addAttribute("users", uService.findAllSortedById());
-			model.addAttribute("tickets", tService.findAllSortedById());
-			return "/users/edit";
-		}
-		//altrimenti salva il user
 		
-		uService.update(updatedFormUser);	
+		//salva lo user
+		
+		 // Aggiungi il ticket alla lista dei ticket dell'utente
+		updatedFormUser.addTicket(ticket);
+
+
+        // Aggiorna l'utente con il nuovo ticket nella lista
+        uService.update(updatedFormUser);	
 
 		attributes.addFlashAttribute("successMessage", "User with id " + updatedFormUser.getId() + ": " +updatedFormUser.getUsername() + ", has been UPDATED!");
 		
@@ -135,29 +137,44 @@ public class UserController {
 		return "redirect:/users";
 	}
 	
-	//assignTicket
-//	@GetMapping("/assign/{tId}/to/{uId}")
-//	public String assignTicket(@PathVariable("tId") Integer ticketId, @PathVariable("uId") Integer userId, Model model) {
-//		Ticket ticketToAssign = tService.findById(ticketId);
-//		User userToAssign = uService.findById(userId);
-//		ticketToAssign.setUser(userToAssign);
-//		model.addAttribute("ticket", ticketToAssign);
-//		model.addAttribute("user", userToAssign);
-//	
-//		return "redirect:/users";
-//	
-//	}
-//	@GetMapping("/assign/{tId}")
-//	public String assignTicket(@PathVariable("tId") Integer ticketId, Model model) {
-//	
-//		Ticket ticketToAssign = tService.findById(ticketId);
-//	
-//		model.addAttribute("user", userToAssign);
-//		model.addAttribute("tickets", tService.findAllSortedById());
-//	
-//		return "users/assign";
-//	
-//	}
+	//edit
+		@GetMapping("/assign/{id}")
+		public String assign(@PathVariable("id") Integer id, Model model) {
+			
+			model.addAttribute("user", uService.findById(id));
+			model.addAttribute("tickets", tService.findAllSortedById());
+			
+			//restituisco la view con il model inserito
+			return "users/edit";
+		}
+	
+	
+	@PostMapping("/{userId}/assign-ticket")
+	public String assignTicketToUser(@PathVariable Integer userId, @RequestParam("ticketId") Integer ticketId, Model model) {
+	    // Trova l'utente esistente
+	    User user = uService.findById(userId);
+	    if (user == null) {
+	        model.addAttribute("error", "User not found.");
+	        return "error";
+	    }
+
+	    // Trova il ticket esistente
+	    Ticket ticket = tService.findById(ticketId);
+	    if (ticket == null) {
+	        model.addAttribute("error", "Ticket not found.");
+	        return "error";
+	    }
+
+	    // Aggiorna l'associazione
+	    user.addTicket(ticket);  // Aggiunge il ticket alla lista dell'utente
+	    ticket.setUser(user);    // Imposta l'utente nel ticket
+
+	    // Salva l'utente aggiornato
+	    uService.update(user);
+
+	    // Ritorna alla pagina dell'utente
+	    return "redirect:/users";  // Reindirizza alla pagina di modifica dell'utente
+	}
 
 	
 	

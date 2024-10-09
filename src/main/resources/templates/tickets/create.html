@@ -14,8 +14,7 @@
 				<div class="col-12">
 					<h1 class="py-4 mb-2 text-center">Creating new ticket</h1>
 
-					<form id="ticket-form" th:object="${ticket}" th:action="@{/tickets/create}"
-						method="POST">
+					<form id="ticket-form" th:object="${ticket}" th:action="@{/tickets/create}" method="POST">
 
 
 						<div class="mb-3">
@@ -49,7 +48,7 @@
 							</div>
 						</div>
 						<div class="mb-3">
-							<label for="customRange3" class="form-label">Priority: <span></span></spanZ></label>
+							<label for="customRange3" class="form-label">Priority: </label>
 							<input type="range" class="form-range" th:value="*{priority}" min="1" max="5" step="1"
 								id="priority" th:field="*{priority}"
 								oninput="this.nextElementSibling.value = this.value">
@@ -62,22 +61,33 @@
 						</div>
 
 
-						<div class="form-check mb-3" th:each="category : ${categories}" role="group"
-							aria-label="Basic checkbox toggle button group">
-
-							<input type="checkbox" class="form-check-input" th:id="|category_${category.id}|"
-								autocomplete="off" th:field="*{categories}" th:value="${category.id}">
-							<label class="form-check-label" th:for="|category_${category.id}|"
-								th:text="${category.name}"></label>
-
+						<div>
+							<select class="form-select mb-3" th:field="*{category}">
+								<option th:each="category : ${categories}" th:text="${category.name}"
+									th:value="${category.id}">
+								</option>
+							</select>
 						</div>
+						<div>
+							<label for="select_status" class="form-label">Status: </label>
+							<select class="form-select mb-3" id="select_status" aria-label="Default select example"
+								th:field="*{status}">
 
-
+								<option th:value="'To do'" th:text="'To do'"></option>
+								<option th:value="'In progress'" th:text="'In progress'"></option>
+								<option th:value="'Done'" th:text="'Done'"></option>
+							</select>
+						</div>
+						<div>
+							<select class="form-select mb-3" th:field="*{user}">
+								<option th:each="user : ${users}" th:text="${user.username}" th:value="${user.id}">
+								</option>
+							</select>
+						</div>
 						<div class="mb-3 d-flex justify-content-around">
-							<input type="submit" class="btn btn-primary btn-lg" value="Create ticket">
+							<input type="submit" class="btn btn-primary btn-lg" value="Update ticket">
 							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">
 						</div>
-
 
 
 					</form>
