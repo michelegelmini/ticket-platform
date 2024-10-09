@@ -51,10 +51,9 @@ public class User {
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	private List<Ticket> tickets;
-//	@Formula("(SELECT tickets.id"
-//			+ "from tickets "
-//			+ "INNER JOIN users on users.id = tickets.user_id "
-//			+ "WHERE ticket.user_id = id);")
+
+	@OneToMany(mappedBy = "author")
+	private List<Note> notes;
 
 	public Integer getId() {
 		return id;
@@ -155,6 +154,14 @@ public class User {
 	public void addTicket(Ticket ticket) {
 		this.tickets.add(ticket);
 		ticket.setUser(this);
+	}
+
+	public List<Note> getNotes() {
+		return notes;
+	}
+
+	public void setNotes(List<Note> notes) {
+		this.notes = notes;
 	}
 
 }

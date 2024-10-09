@@ -212,7 +212,7 @@ public class UserController {
 			@RequestParam("note") Note note, Model model) {
 		User user = uService.findById(userId);
 		Ticket ticket = tService.findById(ticketId);
-		ticket.setNotes(note);
+		ticket.addNote(note);
 
 		// Salva l'utente aggiornato
 		uService.update(user);

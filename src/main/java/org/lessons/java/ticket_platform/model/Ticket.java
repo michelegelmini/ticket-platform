@@ -96,6 +96,10 @@ public class Ticket {
 	public void setNotes(List<Note> notes) {
 		this.notes = notes;
 	}
+	
+	public void addNote(Note note) {
+		this.notes.add(note);
+	}
 
 	public Timestamp getCreatedAt() {
 		return createdAt;
