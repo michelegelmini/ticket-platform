@@ -6,6 +6,7 @@ import java.util.List;
 import org.lessons.java.ticket_platform.model.Note;
 import org.lessons.java.ticket_platform.model.Ticket;
 import org.lessons.java.ticket_platform.model.User;
+import org.lessons.java.ticket_platform.service.NoteService;
 import org.lessons.java.ticket_platform.service.TicketService;
 import org.lessons.java.ticket_platform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class UserController {
 
 	@Autowired
 	private TicketService tService;
+	
+	@Autowired
+	private NoteService nService;
 
 //	@Autowired
 //	private DatabaseUserDetailsService dbService;
@@ -207,19 +211,23 @@ public class UserController {
 		return "redirect:/users"; // Reindirizza alla pagina di modifica dell'utente
 	}
 
-	@PostMapping("/{userId}/addNote")
-	public String addNote(@PathVariable Integer userId, @RequestParam("ticketId") Integer ticketId,
-			@RequestParam("note") Note note, Model model) {
+	@GetMapping("/{userId}/{ticketId}/addNote")
+	public String addNote(@PathVariable Integer userId, @PathVariable("ticketId") Integer ticketId,
+			 Model model) {
 		User user = uService.findById(userId);
 		Ticket ticket = tService.findById(ticketId);
-		ticket.addNote(note);
+		Note note = new Note();
+		note.setAuthor(user);
+		note.setTicket(ticket);
 
 		// Salva l'utente aggiornato
 		uService.update(user);
 		tService.update(ticket);
+		
+		model.addAttribute("note", note);
 
 		// Ritorna alla pagina dell'utente
-		return "redirect:/tickets"; // Reindirizza alla pagina di modifica dell'utente
+		return "notes/create"; // Reindirizza alla pagina di modifica dell'utente
 	}
 
 }

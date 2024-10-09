@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmins:th="http://www.thymeleaf.org">
+
+	<head th:insert="~{fragments/fragments :: head}">
+	</head>
+
+	<body>
+		<header>
+			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+		</header>
+		<main class="container">
+			<div class="row">
+				<div class="col-12">
+					<h1 class="py-4 mb-2 text-center">Creating new note</h1>
+
+					<form id="note-form" th:object="${note}" th:action="@{/notes/create}" method="POST">
+
+
+						<div class="mb-3">
+							<label for="exampleFormControlInput1" class="form-label">Content</label>
+							<textarea class="form-control" id="name" placeholder="Type your request"
+								th:field="*{content}" th:errorClass="is-invalid">
+							<div th:if="${#fields.hasErrors('content')}" class="invalid-feedback">
+								<ul>
+									<li th:each="err : ${#fields.errors('content')}" th:text="${err}"></li>
+								</ul>
+							</div>
+						</div>
+
+
+						<div class="form-check mb-3" th:each="note : ${notes}" role="group"
+							aria-label="Basic checkbox toggle button group">
+
+							<input type="checkbox" class="form-check-input" th:id="|note_${note.id}|"
+								autocomplete="off" th:field="*{notes}" th:value="${note.id}">
+							<label class="form-check-label" th:for="|note_${note.id}|"
+								th:text="${note.name}"></label>
+
+						</div>
+
+
+						<div class="mb-3 d-flex justify-content-around">
+							<input type="submit" class="btn btn-primary btn-lg" value="Create note">
+							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">
+						</div>
+
+
+
+					</form>
+
+
+
+					<div class="card-body d-flex justify-content-center align-items-center">
+						<a th:href="@{/notes}" class="btn btn-primary">Back to notes</a>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer th:replace="~{fragments/fragments :: footer}">
+
+		</footer>
+		<th:block th:replace="~{fragments/fragments :: scripts}"></th:block>
+
+
+	</body>
+
+</html>
