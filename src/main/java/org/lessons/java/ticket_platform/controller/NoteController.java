@@ -3,9 +3,10 @@ package org.lessons.java.ticket_platform.controller;
 
 
 import org.lessons.java.ticket_platform.model.Note;
-
+import org.lessons.java.ticket_platform.model.Ticket;
 import org.lessons.java.ticket_platform.service.NoteService;
 import org.lessons.java.ticket_platform.service.TicketService;
+import org.lessons.java.ticket_platform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -16,13 +17,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/addNote")
+@RequestMapping("/notes")
 public class NoteController {
 
 	@Autowired
@@ -30,6 +31,9 @@ public class NoteController {
 
 	@Autowired
 	private NoteService nService;
+	
+	@Autowired
+	private UserService uService;
 
 //	@GetMapping
 //	public String index(Model model, @RequestParam(name = "name", required = false) String name) {
@@ -61,28 +65,31 @@ public class NoteController {
 //		return "/tickets/show";
 //	}
 //	
-	// create
-	@GetMapping("/create")
-	public String create(Model model) {
-		model.addAttribute("note", new Note());
-		return "/addNote";
-	}
+//	// create
+//	@GetMapping("/create")
+//	public String create(Model model) {
+//		model.addAttribute("note", new Note());
+//		return "/notes/create";
+//	}
 
 	// Store
 	@PostMapping("/create")
-	public String store(@Valid @ModelAttribute("note") Note formNote, BindingResult bindingResult,
+	public String store(@Valid @ModelAttribute("addedNote") Note formNote, @RequestParam("ticketId") Integer ticketId, @RequestParam("userId") Integer userId,  BindingResult bindingResult,
 			RedirectAttributes attributes, Model model) {
 		
-		nService.create(formNote);
-
 		if (bindingResult.hasErrors()) {
 			
-			return "/tickets";
+			return "/home";
 		}
+		
+	    formNote.setTicket(tService.findById(ticketId));
+	    formNote.setAuthor(uService.findById(userId));
+		
+		
 		nService.create(formNote);
-//		attributes.addFlashAttribute("successMessage", formNote.getName() + " has been created!");
+		attributes.addFlashAttribute("successMessage", formNote.getContent() + " has been created!");
 
-		return "redirect:/categories";
+		return "redirect:/tickets/" + formNote.getTicket().getId();
 	}
 }
 

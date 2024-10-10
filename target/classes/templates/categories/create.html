@@ -7,8 +7,9 @@
 	<body>
 		<header>
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
-
 		</header>
+		
+		<!--CATEGORY CREATE-->
 		<main class="container">
 			<div class="row">
 				<div class="col-12">
@@ -30,15 +31,7 @@
 
 
 
-						<div class="form-check mb-3" th:each="category : ${categories}" role="group"
-							aria-label="Basic checkbox toggle button group">
-
-							<input type="checkbox" class="form-check-input" th:id="|category_${category.id}|"
-								autocomplete="off" th:field="*{categories}" th:value="${category.id}">
-							<label class="form-check-label" th:for="|category_${category.id}|"
-								th:text="${category.name}"></label>
-
-						</div>
+					
 
 
 						<div class="mb-3 d-flex justify-content-around">

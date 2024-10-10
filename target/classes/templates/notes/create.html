@@ -7,8 +7,10 @@
 	<body>
 		<header>
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
-
 		</header>
+		
+		<!--NOTE CREATE-->
+		
 		<main class="container">
 			<div class="row">
 				<div class="col-12">
@@ -19,8 +21,12 @@
 
 						<div class="mb-3">
 							<label for="exampleFormControlInput1" class="form-label">Content</label>
+							
+							<input type="hidden" th:value="${ticketId}" name="ticketId">
+							<input type="hidden" th:value="${userId}" name="userId">
 							<textarea class="form-control" id="name" placeholder="Type your request"
-								th:field="*{content}" th:errorClass="is-invalid">
+								th:field="*{content}" th:errorClass="is-invalid"></textarea>
+								
 							<div th:if="${#fields.hasErrors('content')}" class="invalid-feedback">
 								<ul>
 									<li th:each="err : ${#fields.errors('content')}" th:text="${err}"></li>
@@ -28,16 +34,6 @@
 							</div>
 						</div>
 
-
-						<div class="form-check mb-3" th:each="note : ${notes}" role="group"
-							aria-label="Basic checkbox toggle button group">
-
-							<input type="checkbox" class="form-check-input" th:id="|note_${note.id}|"
-								autocomplete="off" th:field="*{notes}" th:value="${note.id}">
-							<label class="form-check-label" th:for="|note_${note.id}|"
-								th:text="${note.name}"></label>
-
-						</div>
 
 
 						<div class="mb-3 d-flex justify-content-around">

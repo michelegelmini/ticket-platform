@@ -35,7 +35,7 @@ public class UserController {
 
 	@Autowired
 	private TicketService tService;
-	
+
 	@Autowired
 	private NoteService nService;
 
@@ -47,7 +47,7 @@ public class UserController {
 			Principal principal, Authentication authentication) {
 
 		List<User> userList;
-		User loggedUser = uService.findByUsername(principal.getName()); 
+		User loggedUser = uService.findByUsername(principal.getName());
 
 		if (loggedUser.getUsername().equals("admin")) {
 			model.addAttribute("username", username);
@@ -68,7 +68,7 @@ public class UserController {
 		// li inserisco nel modello
 		model.addAttribute("tickets", tService.findAllSortedById());
 		model.addAttribute("users", userList);
-		
+
 		username = loggedUser.getUsername();
 		if (username.equals("admin")) {
 			return "/users/index";
@@ -79,10 +79,10 @@ public class UserController {
 
 	// show
 	@GetMapping("/{id}")
-	public String show(@PathVariable("id") Integer userId, Model model, Principal principal, Authentication authentication) {
+	public String show(@PathVariable("id") Integer userId, Model model, Principal principal,
+			Authentication authentication) {
 		model.addAttribute("user", uService.findById(userId));
 		model.addAttribute("tickets", tService.findByUser(userId));
-		
 
 		return "/users/show";
 	}
@@ -123,23 +123,24 @@ public class UserController {
 
 	// update
 	@PostMapping("/edit/{id}")
-	public String update(@PathVariable("id") Integer id, @Valid @ModelAttribute("user") User updatedFormUser, Ticket ticket,
-			RedirectAttributes attributes, Model model, Authentication authentication, Principal principal) {
+	public String update(@PathVariable("id") Integer id, @Valid @ModelAttribute("user") User updatedFormUser,
+			Ticket ticket, RedirectAttributes attributes, Model model, Authentication authentication,
+			Principal principal) {
 
 		List<Ticket> ticketList;
 		User loggedUser = uService.findByUsername(principal.getName());
 		int loggedUserId = loggedUser.getId();
 		User existingUser = uService.findById(id);
-		
+
 		// salva lo user
 		// Aggiungi il ticket alla lista dei ticket dell'utente
 		updatedFormUser.addTicket(ticket);
 		existingUser.setRoles(existingUser.getRoles());
-		
+
 		existingUser.setUsername(updatedFormUser.getUsername());
-	    existingUser.setPassword(updatedFormUser.getPassword());
-	    existingUser.setName(updatedFormUser.getName());
-	    existingUser.setLastName(updatedFormUser.getLastName());
+		existingUser.setPassword(updatedFormUser.getPassword());
+		existingUser.setName(updatedFormUser.getName());
+		existingUser.setLastName(updatedFormUser.getLastName());
 
 		// Aggiorna l'utente con il nuovo ticket nella lista
 		uService.update(existingUser);
@@ -148,7 +149,7 @@ public class UserController {
 				+ updatedFormUser.getUsername() + ", has been UPDATED!");
 
 		if (loggedUser.getUsername().equals("admin")) {
-			return "redirect:/users/"+updatedFormUser.getId();
+			return "redirect:/users/" + updatedFormUser.getId();
 		} else {
 			return "redirect:/login";
 		}
@@ -212,22 +213,26 @@ public class UserController {
 	}
 
 	@GetMapping("/{userId}/{ticketId}/addNote")
-	public String addNote(@PathVariable Integer userId, @PathVariable("ticketId") Integer ticketId,
-			 Model model) {
-		User user = uService.findById(userId);
+	public String addNote(@PathVariable Integer userId, @PathVariable("ticketId") Integer ticketId, Model model,
+			Principal principal, Authentication authentication) {
+
+		User loggedUser = uService.findByUsername(principal.getName());
+
 		Ticket ticket = tService.findById(ticketId);
-		Note note = new Note();
-		note.setAuthor(user);
-		note.setTicket(ticket);
+		Note addedNote = new Note();
+		addedNote.setAuthor(loggedUser);
+		addedNote.setTicket(tService.findById(ticketId));
+		ticket.addNote(addedNote);
 
-		// Salva l'utente aggiornato
-		uService.update(user);
-		tService.update(ticket);
-		
-		model.addAttribute("note", note);
+//	
+//		uService.update(loggedUser);
+//		tService.update(ticket);
+//		
+		model.addAttribute("ticketId", ticketId);
+		model.addAttribute("userId", userId);
+		model.addAttribute("note", addedNote);
 
-		// Ritorna alla pagina dell'utente
-		return "notes/create"; // Reindirizza alla pagina di modifica dell'utente
+		return "notes/create"; // Reindirizza alla pagina di modifica della note
 	}
 
 }

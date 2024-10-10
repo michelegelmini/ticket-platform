@@ -13,18 +13,30 @@
 			<div class="mb-3" th:object="${ticket}">
 				<h1>[[ *{title} ]]</h1>
 				<h3>[[ *{content} ]]</h3>
-				<form th:object="${note}"
-					th:action="@{/users/{userId}/{ticketId}/addNote(userId=${loggedUserId}, ticketId=${ticket.id})}"
+				<h4>Status: [[*{status}]]</h4>
+				<th:block th:if="${ticket.user == null}">
+					<h4 th:text="'To be assigned'"></h4>
+				</th:block>
+				<th:block th:unless="${ticket.user == null}">
+					<h4>Assigned to: [[*{user.username}]]</h4>
+				</th:block>
+				<form th:action="@{/users/{userId}/{ticketId}/addNote(userId=${loggedUserId}, ticketId=${ticket.id})}"
 					method="get">
-					<input type="hidden" th:value="${ticket.id}" name="ticketId">
-					<textarea name="noteForm"></textarea>
+					<input type="hidden" th:value="${ticketId}" th:field="${ticket.id}" name="ticketId">
+					<input type="hidden" th:value="${userId}" name="userId">
 					<input type="submit" class="btn btn-primary btn-lg" value="Add Note"></input>
+				</form>
 
-					<th:block th:if="${ticket.user != null}">
-						<form th:action="@{/tickets/done/{id}(id=${ticket.id})}" method="post">
-							<input type="submit" class="btn btn-success btn-lg" value="Set to Done">
-						</form>
-					</th:block>
+				<p class="btn btn-warning" th:each="note : ${notes}">[[${note.content}]] by [[${note.getAuthorName()}]]
+					created at [[${note.getFormattedCreatedAt()}]]</p>
+
+
+
+				<th:block th:if="${ticket.user != null}">
+					<form th:action="@{/tickets/done/{id}(id=${ticket.id})}" method="post">
+						<input type="submit" class="btn btn-success btn-lg" value="Set to Done">
+					</form>
+				</th:block>
 			</div>
 
 

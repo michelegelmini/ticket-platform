@@ -77,6 +77,10 @@ public class Note {
 	public void setAuthor(User author) {
 		this.author = author;
 	}
+	
+	public String getAuthorName(){
+		return author.getName() + " " + author.getLastName();
+	}
 
 	public Timestamp getCreatedAt() {
 		return createdAt;

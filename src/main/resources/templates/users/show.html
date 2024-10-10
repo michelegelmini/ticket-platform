@@ -9,6 +9,8 @@
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 		</header>
 
+		<!--USER SHOW-->
+		
 		<main class="container text-center" th:object="${user}">
 			<div class="mb-3">
 				<h1>[[ *{name} ]] [[*{lastName}]]</h1>

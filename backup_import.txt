@@ -31,3 +31,53 @@ INSERT INTO tickets (id, title, content, priority, category_id) VALUES (1, 'Lost
 ALTER TABLE users MODIFY is_available BOOLEAN DEFAULT TRUE;
 
 INSERT INTO users (id, username, password, first_name, last_name, picture) VALUES (1, 'jdoe1', '{noop}password123', 'John', 'Doe', 'https://example.com/images/jdoe1.jpg'),(2, 'asmith', '{noop}pass456', 'Alice', 'Smith', 'https://example.com/images/asmith.jpg'),(3, 'bjackson', '{noop}pwd789', 'Brad', 'Jackson', 'https://example.com/images/bjackson.jpg'),(4, 'csanchez', '{noop}abc123', 'Carlos', 'Sanchez', 'https://example.com/images/csanchez.jpg'),(5, 'rjohnson', '{noop}qwerty456', 'Rachel', 'Johnson', 'https://example.com/images/rjohnson.jpg'),(6, 'lmartinez', '{noop}zxcvbn789', 'Luis', 'Martinez', 'https://example.com/images/lmartinez.jpg'),(7, 'klee', '{noop}pass001', 'Kevin', 'Lee', 'https://example.com/images/klee.jpg'),(8, 'dwhite', '{noop}password654', 'Diana', 'White', 'https://example.com/images/dwhite.jpg'),(9, 'tadams', '{noop}pass321', 'Thomas', 'Adams', 'https://example.com/images/tadams.jpg'),(10, 'cwilson', '{noop}passwd789', 'Catherine', 'Wilson', 'https://example.com/images/cwilson.jpg'),(11, 'pmiller', '{noop}pass876', 'Paul', 'Miller', 'https://example.com/images/pmiller.jpg'),(12, 'jsmith', '{noop}pass998', 'Jessica', 'Smith', 'https://example.com/images/jsmith.jpg');
+
+
+
+
+
+Ogni user può aggiungere una nota ad un ticket. Per farlo ho creato un bottone che manda a questa @GetMapping nello UserController
+
+
+@GetMapping("/{userId}/{ticketId}/addNote")
+	public String addNote(@PathVariable Integer userId, @PathVariable("ticketId") Integer ticketId,
+			 Model model, Principal principal, Authentication authentication) {
+
+		
+		User loggedUser = uService.findByUsername(principal.getName()); 
+		
+		Ticket ticket = tService.findById(ticketId);
+		Note addedNote = new Note();
+		addedNote.setAuthor(loggedUser);
+		addedNote.setTicket(tService.findById(ticketId));
+		ticket.addNote(addedNote);
+
+//	
+//		uService.update(loggedUser);
+//		tService.update(ticket);
+//		
+		model.addAttribute("note", addedNote);
+		
+
+		return "notes/create"; // Reindirizza alla pagina di modifica della note
+	}
+
+
+La @PostMapping nel NoteController è fatta così
+// Store
+	@PostMapping("/create")
+	public String store(@Valid @ModelAttribute("addedNote") Note formNote, BindingResult bindingResult,
+			RedirectAttributes attributes, Model model) {
+		
+		if (bindingResult.hasErrors()) {
+			
+			return "/home";
+		}
+		nService.create(formNote);
+		attributes.addFlashAttribute("successMessage", formNote.getContent() + " has been created!");
+
+		return "redirect:/tickets/" + formNote.getTicket().getId();
+	}
+}
+
+Comunque non viene associata la nota al Ticket, il cui getTicket() ritorna NULL, come mai?

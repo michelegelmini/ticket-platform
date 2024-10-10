@@ -3,11 +3,11 @@ package org.lessons.java.ticket_platform.controller;
 import java.util.List;
 
 import org.lessons.java.ticket_platform.model.Category;
-import org.lessons.java.ticket_platform.model.Ticket;
+
 import org.lessons.java.ticket_platform.service.CategoryService;
-import org.lessons.java.ticket_platform.service.TicketService;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,19 +24,16 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/categories")
 public class CategoryController {
-	
-	@Autowired
-	private TicketService tService;
-	
+
 	@Autowired
 	private CategoryService cService;
-	
+
 	@GetMapping
 	public String index(Model model, @RequestParam(name = "name", required = false) String name) {
 
 		model.addAttribute("categoryName", name);
-		//model.addAttribute("username", authentication.getName());
-		
+		// model.addAttribute("username", authentication.getName());
+
 		List<Category> categoryList;
 
 		if (name != null && !name.isEmpty()) {
@@ -53,78 +50,78 @@ public class CategoryController {
 
 		return "/categories/index";
 	}
-	
-	//show
+
+	// show
 //	@GetMapping("/{id}")
 //	public String show(@PathVariable("id") Integer ticketId, Model model) {
 //		model.addAttribute("ticket", tService.findById(ticketId));
 //		return "/tickets/show";
 //	}
 //	
-	//create	
+	// create
 	@GetMapping("/create")
 	public String create(Model model) {
 		model.addAttribute("category", new Category());
 		return "/categories/create";
 	}
-	
-	//Store
+
+	// Store
 	@PostMapping("/create")
-	public String store(@Valid @ModelAttribute("ticket") Category formCategory, BindingResult bindingResult, RedirectAttributes attributes, Model model) {
-		
+	public String store(@Valid @ModelAttribute("ticket") Category formCategory, BindingResult bindingResult,
+			RedirectAttributes attributes, Model model) {
+
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("ingredients", cService.findAllSortedById());
 			return "/tickets/create";
 		}
 		cService.create(formCategory);
 		attributes.addFlashAttribute("successMessage", formCategory.getName() + " has been created!");
-		
-		
+
 		return "redirect:/categories";
 	}
-	
-	//edit
+
+	// edit
 	@GetMapping("/edit/{id}")
 	public String edit(@PathVariable("id") Integer id, Model model) {
-		
+
 		model.addAttribute("category", cService.findById(id));
-		
-		//restituisco la view con il model inserito
+
+		// restituisco la view con il model inserito
 		return "categories/edit";
 	}
-	
-	//update
+
+	// update
 	@PostMapping("/edit/{id}")
-	public String update(@Valid @ModelAttribute("category") Category updatedFormCategory, BindingResult bindingResult, RedirectAttributes attributes, Model model) {
-		
-		//se ci sono errori nel form, mostra gli errori
+	public String update(@Valid @ModelAttribute("category") Category updatedFormCategory, BindingResult bindingResult,
+			RedirectAttributes attributes, Model model) {
+
+		// se ci sono errori nel form, mostra gli errori
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("categories", cService.findAllSortedById());
 			return "/tickets/edit";
 		}
-		//altrimenti salva il ticket
-		cService.update(updatedFormCategory);	
+		// altrimenti salva il ticket
+		cService.update(updatedFormCategory);
 
-		attributes.addFlashAttribute("successMessage", "Ticket with id " + updatedFormCategory.getId() + ": " +updatedFormCategory.getName() + ", has been UPDATED!");
-		
-		
+		attributes.addFlashAttribute("successMessage", "Ticket with id " + updatedFormCategory.getId() + ": "
+				+ updatedFormCategory.getName() + ", has been UPDATED!");
+
 		return "redirect:/tickets";
 	}
-	
-	//delete
+
+	// delete
 	@PostMapping("/delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes attributes) {
-		
-		//deleteById cerca ed elimina in un unico comando
-		
+
+		// deleteById cerca ed elimina in un unico comando
+
 		Category categoryToDelete = cService.findById(id);
 		cService.delete(id);
-		
-		attributes.addFlashAttribute("deletedMessage", "Ticket with id " + id +": " + categoryToDelete.getName() + ", has been DELETED!");
-		
+
+		attributes.addFlashAttribute("deletedMessage",
+				"Ticket with id " + id + ": " + categoryToDelete.getName() + ", has been DELETED!");
+
 		return "redirect:/categories";
 	}
-	
-	
 
 }

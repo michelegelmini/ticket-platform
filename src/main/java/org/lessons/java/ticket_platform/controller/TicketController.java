@@ -8,6 +8,7 @@ import org.lessons.java.ticket_platform.model.Category;
 import org.lessons.java.ticket_platform.model.Ticket;
 import org.lessons.java.ticket_platform.model.User;
 import org.lessons.java.ticket_platform.service.CategoryService;
+import org.lessons.java.ticket_platform.service.NoteService;
 import org.lessons.java.ticket_platform.service.TicketService;
 import org.lessons.java.ticket_platform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class TicketController {
 
 	@Autowired
 	private UserService uService;
+	
+	@Autowired
+	private NoteService nService;
 
 	@GetMapping
 	public String index(Model model, @RequestParam(name = "title", required = false) String title,
@@ -99,8 +103,9 @@ public class TicketController {
 	// show
 	@GetMapping("/{id}")
 	public String show(@PathVariable("id") Integer ticketId, Model model, Principal principal, Authentication authentication) {
-		model.addAttribute("ticket", tService.findById(ticketId));
+		model.addAttribute("notes", nService.findByTicketId(ticketId));
 		
+		model.addAttribute("ticket", tService.findById(ticketId));
 		User loggedUser = uService.findByUsername(principal.getName());
 		int loggedUserId = loggedUser.getId();
 		model.addAttribute("loggedUserId", loggedUserId);
