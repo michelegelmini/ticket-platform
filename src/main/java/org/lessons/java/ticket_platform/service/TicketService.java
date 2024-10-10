@@ -1,6 +1,7 @@
 package org.lessons.java.ticket_platform.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.lessons.java.ticket_platform.model.Ticket;
 import org.lessons.java.ticket_platform.repo.TicketRepository;
@@ -30,7 +31,11 @@ public class TicketService {
 		return repository.save(ticket);
 	}
 
-	public Ticket findById(Integer id) {
+	public Optional<Ticket> findById(Integer id) {
+		return repository.findById(id);
+	}
+	
+	public Ticket findSelectedById(Integer id) {
 		return repository.findById(id).get();
 	}
 

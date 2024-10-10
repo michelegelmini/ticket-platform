@@ -1,9 +1,7 @@
 package org.lessons.java.ticket_platform.controller;
 
-
-
 import org.lessons.java.ticket_platform.model.Note;
-import org.lessons.java.ticket_platform.model.Ticket;
+
 import org.lessons.java.ticket_platform.service.NoteService;
 import org.lessons.java.ticket_platform.service.TicketService;
 import org.lessons.java.ticket_platform.service.UserService;
@@ -12,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +29,7 @@ public class NoteController {
 
 	@Autowired
 	private NoteService nService;
-	
+
 	@Autowired
 	private UserService uService;
 
@@ -74,18 +72,18 @@ public class NoteController {
 
 	// Store
 	@PostMapping("/create")
-	public String store(@Valid @ModelAttribute("addedNote") Note formNote, @RequestParam("ticketId") Integer ticketId, @RequestParam("userId") Integer userId,  BindingResult bindingResult,
-			RedirectAttributes attributes, Model model) {
-		
+	public String store(@Valid @ModelAttribute("addedNote") Note formNote, @RequestParam("ticketId") Integer ticketId,
+			@RequestParam("userId") Integer userId, BindingResult bindingResult, RedirectAttributes attributes,
+			Model model) {
+
 		if (bindingResult.hasErrors()) {
-			
+
 			return "/home";
 		}
-		
-	    formNote.setTicket(tService.findById(ticketId));
-	    formNote.setAuthor(uService.findById(userId));
-		
-		
+
+		formNote.setTicket(tService.findById(ticketId).get());
+		formNote.setAuthor(uService.findById(userId));
+
 		nService.create(formNote);
 		attributes.addFlashAttribute("successMessage", formNote.getContent() + " has been created!");
 
@@ -93,7 +91,7 @@ public class NoteController {
 	}
 }
 
-	// edit
+// edit
 //	@GetMapping("/edit/{id}")
 //	public String edit(@PathVariable("id") Integer id, Model model) {
 //

@@ -34,50 +34,221 @@ INSERT INTO users (id, username, password, first_name, last_name, picture) VALUE
 
 
 
+Vorrei mostrare su quanti ticket sta lavorando uno user.
+Se il ticket ha lo stato "doing" allora entra nella lista ticketInProgress. Il problema è che questa restituisce sempre 0.
+
+HTML:
 
 
-Ogni user può aggiungere una nota ad un ticket. Per farlo ho creato un bottone che manda a questa @GetMapping nello UserController
+									<th:block th:unless="*{isAvailable}">
+										<th:block th:if="${user.getTicketsInProgress().size == 1}">
+											<th>Working on ticket
+												[[${user.getTicketsInProgress().last.getId()}]]:
+												[[${user.getTicketsInProgress().last.getTitle()}]]</th>
+										</th:block>
+										<th:block th:unless="${user.ticketsInProgress.size == 1}">
+										<th>Working on
+											[[${user.getTicketsInProgress().size}]] tickets</th>
+										</th:block>
+									</th:block>
+									<th:block th:if="*{isAvailable}">
+										<th>
+											<h4>Available</h4>
+											<a class="btn btn-primary"
+												th:href="@{users/assign/{id}(id=${user.id})}">Assign a Ticket</a>
 
+										</th>
+									</th:block>
 
-@GetMapping("/{userId}/{ticketId}/addNote")
-	public String addNote(@PathVariable Integer userId, @PathVariable("ticketId") Integer ticketId,
-			 Model model, Principal principal, Authentication authentication) {
+User model in Java:
 
-		
-		User loggedUser = uService.findByUsername(principal.getName()); 
-		
-		Ticket ticket = tService.findById(ticketId);
-		Note addedNote = new Note();
-		addedNote.setAuthor(loggedUser);
-		addedNote.setTicket(tService.findById(ticketId));
-		ticket.addNote(addedNote);
+package org.lessons.java.ticket_platform.model;
 
-//	
-//		uService.update(loggedUser);
-//		tService.update(ticket);
-//		
-		model.addAttribute("note", addedNote);
-		
+import java.util.List;
 
-		return "notes/create"; // Reindirizza alla pagina di modifica della note
+import java.util.Set;
+
+import org.hibernate.annotations.Formula;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
+@Entity
+@Table(name = "users")
+public class User {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private Integer id;
+
+	@NotNull
+	@NotEmpty
+	private String username;
+
+	@NotNull
+	@NotEmpty
+	private String password;
+
+	private String firstName;
+
+	private String lastName;
+
+	private String picture;
+
+	private boolean isAvailable;
+
+	@ElementCollection
+	private List<Ticket> ticketsInProgress;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	private Set<Role> roles;
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	private List<Ticket> tickets;
+	
+//	@Formula("(SELECT tickets.id "
+//			+ "from tickets "
+//			+ "INNER JOIN users on tickets.id = users.id "
+//			+ "WHERE tickets.status = 'Doing')")
+
+	@OneToMany(mappedBy = "author")
+	private List<Note> notes;
+
+	public Integer getId() {
+		return id;
 	}
 
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-La @PostMapping nel NoteController è fatta così
-// Store
-	@PostMapping("/create")
-	public String store(@Valid @ModelAttribute("addedNote") Note formNote, BindingResult bindingResult,
-			RedirectAttributes attributes, Model model) {
-		
-		if (bindingResult.hasErrors()) {
-			
-			return "/home";
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
+	public String getName() {
+		return firstName;
+	}
+
+	public void setName(String name) {
+		this.firstName = name;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
+	
+	public void setAvailability() {
+		for (Ticket ticket : tickets) {
+			String statusToCheck = ticket.getStatus();
+			if (statusToCheck.equals("Doing")) {
+				this.setAvailable(false);		
+			} 
 		}
-		nService.create(formNote);
-		attributes.addFlashAttribute("successMessage", formNote.getContent() + " has been created!");
-
-		return "redirect:/tickets/" + formNote.getTicket().getId();
+		this.setAvailable(true);	
 	}
-}
 
-Comunque non viene associata la nota al Ticket, il cui getTicket() ritorna NULL, come mai?
+	public boolean isAvailable() {
+		for (Ticket ticket : tickets) {
+			String statusToCheck = ticket.getStatus();
+			if (statusToCheck.equals("Doing")) {
+				return false;		
+			} 
+		}
+		return true;			
+	}
+
+	public void setAvailable(boolean isAvailable) {
+		this.isAvailable = isAvailable;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public List<Ticket> getTickets() {
+		return tickets;
+	}
+
+	public void setTickets(List<Ticket> tickets) {
+		this.tickets = tickets;
+	}
+
+	public void addTicket(Ticket ticket) {
+		tickets.add(ticket);
+		ticket.setUser(this);
+	}
+
+	public List<Note> getNotes() {
+		return notes;
+	}
+
+	public void setNotes(List<Note> notes) {
+		this.notes = notes;
+	}
+
+	public List<Ticket> getTicketsInProgress() {
+		for (Ticket ticket : tickets) {
+			if(ticket.getStatus().equals("Doing")){
+				ticketsInProgress.add(ticket);
+			}
+		}
+		
+		return ticketsInProgress;
+	}
+
+//	public void setTicketsInProgress(List<Ticket> ticketsInProgress) {
+//		this.ticketsInProgress = ticketsInProgress;
+//	}
+
+}

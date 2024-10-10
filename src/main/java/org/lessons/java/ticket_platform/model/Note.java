@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,10 +32,12 @@ public class Note {
 
 	@ManyToOne
 	@JoinColumn(name = "ticket_id")
+	@JsonBackReference
 	private Ticket ticket;
 
 	@ManyToOne
 	@JoinColumn(name = "author_id")
+	@JsonBackReference
 	private User author;
 
 	@CreationTimestamp

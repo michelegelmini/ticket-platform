@@ -1,7 +1,6 @@
 package org.lessons.java.ticket_platform.controller;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.lessons.java.ticket_platform.model.Category;
@@ -105,7 +104,10 @@ public class TicketController {
 	public String show(@PathVariable("id") Integer ticketId, Model model, Principal principal, Authentication authentication) {
 		model.addAttribute("notes", nService.findByTicketId(ticketId));
 		
-		model.addAttribute("ticket", tService.findById(ticketId));
+		model.addAttribute("ticket", tService.findSelectedById(ticketId));
+		model.addAttribute("users", uService.findAllSortedById());
+		model.addAttribute("categories", cService.findAllSortedById());
+		
 		User loggedUser = uService.findByUsername(principal.getName());
 		int loggedUserId = loggedUser.getId();
 		model.addAttribute("loggedUserId", loggedUserId);
@@ -146,7 +148,7 @@ public class TicketController {
 	@GetMapping("/edit/{id}")
 	public String edit(@PathVariable("id") Integer id, Model model) {
 
-		model.addAttribute("ticket", tService.findById(id));
+		model.addAttribute("ticket", tService.findSelectedById(id));
 		model.addAttribute("categories", cService.findAllSortedById());
 		model.addAttribute("users", uService.findAllSortedById());
 
@@ -182,7 +184,7 @@ public class TicketController {
 			Authentication authentication) {
 
 		if (principal.getName().equals("admin")) {
-			Ticket ticketToDelete = tService.findById(id);
+			Ticket ticketToDelete = tService.findById(id).get();
 			tService.delete(id);
 
 			attributes.addFlashAttribute("deletedMessage",
@@ -198,7 +200,7 @@ public class TicketController {
 	@PostMapping("/done/{id}")
 	public String done(@PathVariable("id") Integer id, RedirectAttributes attributes) {
 
-		Ticket ticketToSetDone = tService.findById(id);
+		Ticket ticketToSetDone = tService.findById(id).get();
 		ticketToSetDone.setStatus("Done");
 		tService.update(ticketToSetDone);
 

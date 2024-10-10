@@ -8,6 +8,9 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,25 +33,29 @@ public class Ticket {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@NotNull
 	private String title;
 
+	@NotNull
 	private String content;
 
 	@NotNull
-	// @Size(min=1, max=5, message = "{ticket.priority.invalid}")
 	private int priority;
 
 	private String status;
 
 	@ManyToOne
 	@JoinColumn(name = "category_id")
+	@JsonBackReference
 	private Category category;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
+	@JsonBackReference
 	private User user;
 	
 	@OneToMany(mappedBy = "ticket")
+	@JsonManagedReference
 	private List<Note> notes;
 
 	@CreationTimestamp

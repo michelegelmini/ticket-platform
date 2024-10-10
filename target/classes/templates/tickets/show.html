@@ -18,6 +18,9 @@
 					<h4 th:text="'To be assigned'"></h4>
 				</th:block>
 				<th:block th:unless="${ticket.user == null}">
+					<h4 th:text="'Change user'"></h4>
+				</th:block>
+				<th:block th:unless="${ticket.user == null}">
 					<h4>Assigned to: [[*{user.username}]]</h4>
 				</th:block>
 				<form th:action="@{/users/{userId}/{ticketId}/addNote(userId=${loggedUserId}, ticketId=${ticket.id})}"
@@ -42,6 +45,23 @@
 
 			<!--ADMIN relative (edit and delete buttons)-->
 			<th:block sec:authorize="hasAuthority('ADMIN')">
+				<form id="ticket-form" th:object="${ticket}" th:action="@{/tickets/edit/{id}(id = ${ticket.id})}"
+					method="POST">
+					<div>
+						<label for="select-user" class="form-label">Assign to user:</label>
+						<select id="select-user" class="form-select mb-3" th:field="*{user}">
+							<option th:each="user : ${users}" th:if=${!user.notAtWork} th:value="${user.id}">[[${user.name}]]
+								[[${user.lastName}]]: [[${user.username}]]</option>
+						</select>
+					</div>
+					<input type="hidden" th:value="*{title}" th:field="*{title}">
+					<input type="hidden" th:value="*{content}" th:field="*{content}">
+					<input type="hidden" th:value="*{category.id}" th:field="*{category.id}">
+					<input type="hidden" th:value="*{status}" th:field="*{status}">
+
+					<input type="submit" class="btn btn-primary btn-lg" value="Assign to User">
+				</form>
+
 				<a class="btn btn-success m-1" th:href="@{edit/{id}(id=${ticket.id})}">Edit</a>
 
 				<!-- Button trigger modal -->

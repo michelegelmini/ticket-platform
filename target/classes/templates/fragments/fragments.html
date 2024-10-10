@@ -14,7 +14,7 @@
 
 	<body>
 
-		
+
 		<div th:fragment="successAlert(message)" class="alert alert-success alert-dismissible fade show" role="alert">
 			<span th:text="${message}"></span>
 			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
@@ -31,29 +31,23 @@
 		</th:block>
 
 
-		<footer class="footer fixed-bottom text-center d-flex align-items-center justify-content-center"
-			th:fragment="footer">
+		<th:block class="" th:fragment="footer">
 			<!-- Footer content-->
 
-		<!--	
-				<p class="col-md-4 mb-0 text-body-secondary">© 2024 Company, Inc</p>
-				<a href="/" class="col-md-4  mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-					<svg class="bi me-2" width="40" height="32">
-						<use xlink:href="#bootstrap"></use>
-					</svg>
-				</a>
-			
-		
-				<ul class="nav col-md-4 justify-content-end">
-					<li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
-					<li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Features</a></li>
-					<li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Pricing</a></li>
-					<li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">FAQs</a></li>
-					<li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">About</a></li>
-				</ul>
-				-->
+			<footer class="footer bg-dark text-secondary p-3 text-center d-flex justify-content-center align-items-center">
+				<div class="">
+					<span>© 2024 - Made with love in Verona</span>
+				</div>
 
-		</footer>
+
+				
+			</footer>
+
+		</th:block>
+
+
+
+
 
 	</body>
 

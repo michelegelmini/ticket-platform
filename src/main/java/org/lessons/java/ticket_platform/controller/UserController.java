@@ -67,6 +67,7 @@ public class UserController {
 
 		// li inserisco nel modello
 		model.addAttribute("tickets", tService.findAllSortedById());
+		model.addAttribute("ticketsInProgress", tService.findByStatus("Doing"));
 		model.addAttribute("users", userList);
 
 		username = loggedUser.getUsername();
@@ -179,7 +180,7 @@ public class UserController {
 		model.addAttribute("tickets", tService.findByStatus("To do"));
 
 		// restituisco la view con il model inserito
-		return "users/edit";
+		return "users/assign";
 	}
 
 	@PostMapping("/{userId}/assign-ticket")
@@ -193,7 +194,7 @@ public class UserController {
 //		}
 //
 //		// Trova il ticket esistente
-		Ticket ticket = tService.findById(ticketId);
+		Ticket ticket = tService.findById(ticketId).get();
 //		if (ticket == null) {
 //			model.addAttribute("error", "Ticket not found.");
 //			return "error";
@@ -218,10 +219,10 @@ public class UserController {
 
 		User loggedUser = uService.findByUsername(principal.getName());
 
-		Ticket ticket = tService.findById(ticketId);
+		Ticket ticket = tService.findById(ticketId).get();
 		Note addedNote = new Note();
 		addedNote.setAuthor(loggedUser);
-		addedNote.setTicket(tService.findById(ticketId));
+		addedNote.setTicket(tService.findById(ticketId).get());
 		ticket.addNote(addedNote);
 
 //	
@@ -234,5 +235,16 @@ public class UserController {
 
 		return "notes/create"; // Reindirizza alla pagina di modifica della note
 	}
+	
+	
+	@PostMapping("/{userId}/setNotAtWork")
+    public String updateUserAtWorkStatus(@PathVariable Integer userId, @RequestParam boolean notAtWork) {
+        User user = uService.findById(userId);
+        
+            user.setNotAtWork(notAtWork);
+            uService.update(user);
+        
+        return "redirect:/users/" + userId;
+    }
 
 }

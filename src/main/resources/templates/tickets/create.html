@@ -37,16 +37,7 @@
 								</ul>
 							</div>
 						</div>
-						<div class="mb-3">
-							<label for="exampleFormControlTextarea1" class="form-label">Notes</label>
-							<textarea class="form-control" id="notes" rows="3" th:field="*{notes}"
-								th:errorClass="is-invalid"></textarea>
-							<div th:if="${#fields.hasErrors('notes')}" class="invalid-feedback">
-								<ul>
-									<li th:each="err : ${#fields.errors('notes')}" th:text="${err}"></li>
-								</ul>
-							</div>
-						</div>
+						
 						<div class="mb-3">
 							<label for="customRange3" class="form-label">Priority: </label>
 							<input type="range" class="form-range" th:value="*{priority}" min="1" max="5" step="1"
@@ -68,12 +59,12 @@
 								</option>
 							</select>
 						</div>
-					<!--	<div>
+						<div>
 							<select class="form-select mb-3" th:field="*{user}">
-								<option th:each="user : ${users}" th:text="${user.username}" th:value="${user.id}">
+								<option th:each="user : ${users}" th:if=${!user.notAtWork} th:text="${user.username}" th:value="${user.id}">
 								</option>
 							</select>
-						</div>-->
+						
 						<div class="mb-3 d-flex justify-content-around">
 							<input type="submit" class="btn btn-primary btn-lg" value="Update ticket">
 							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">

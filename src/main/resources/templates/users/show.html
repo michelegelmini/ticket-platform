@@ -10,14 +10,40 @@
 		</header>
 
 		<!--USER SHOW-->
-		
+
 		<main class="container text-center" th:object="${user}">
 			<div class="mb-3">
 				<h1>[[ *{name} ]] [[*{lastName}]]</h1>
 				<h3>[[ *{username} ]]</h3>
 				<img>[[ *{picture} ]]</img>
+
+				<th:block th:if="*{isAvailable}">
+					<th>
+						<h4>Available</h4>
+						<th:block sec:authorize="hasAuthority('USER')">
+							<form th:action="@{/users/{userId}/setNotAtWork(userId=${user.id})}" method="post">
+
+								<input type="hidden" id="notAtWorkHidden" name="notAtWork" value="false">
+
+								<div class="form-check form-switch">
+									<input class="form-check-input" type="checkbox" role="switch"
+										id="flexSwitchCheckDefault" name="notAtWork" th:checked="${user.isNotAtWork()}"
+										value="true"
+										onchange="document.getElementById('notAtWorkHidden').disabled = this.checked; this.form.submit()">
+									<label class="form-check-label" for="flexSwitchCheckDefault">Set not at work</label>
+								</div>
+							</form>
+						</th:block>
+
+					</th>
+				</th:block>
+
+
+
 			</div>
-			<th:block th:if="*{tickets.size > 0}">
+
+			<!--TICKETS SECTION-->
+			<th:block th:unless="*{isAvailable()}">
 				<h1>Working on:</h1>
 				<div class="container d-flex justify-content-center">
 					<th:block th:each="ticket: ${tickets}" th:unless="${ticket.status.equals('Done')}">
@@ -26,9 +52,11 @@
 								<h5 class="card-title">[[${ticket.title}]]</h5>
 								<h6 class="card-subtitle mb-2 text-muted">[[${ticket.category.name}]]</h6>
 								<p class="card-text">[[${ticket.content}]]</p>
-								<form th:action="@{/users/{id}/addNote(id=${user.id})}" method="post">
+								<form
+									th:action="@{/users/{userId}/{ticketId}/addNote(userId=${user.id}, ticketId=${ticket.id})}"
+									method="get">
 									<input type="hidden" th:value="${ticket.id}" name="ticketId">
-									<textarea name="note">[[${ticket.notes}]]</textarea>
+									<input type="hidden" th:value="${user.id}" name="userId">
 									<input type="submit" class="btn btn-primary btn-lg" value="Add Note"></input>
 								</form>
 								<form th:action="@{/tickets/done/{id}(id=${ticket.id})}" method="post">
@@ -36,20 +64,33 @@
 								</form>
 							</div>
 					</th:block>
-				</div>
 
-
-				</form>
+					<th:block sec:authorize="hasAuthority('ADMIN')">
+						<th>
+							<h4>Available</h4>
+							<a class="btn btn-primary" th:href="@{assign/{id}(id=${user.id})}">Assign another Ticket</a>
+						</th>
+					</th:block>
 				</div>
 			</th:block>
 
-			<a class="btn btn-success m-1" th:href="@{edit/{id}(id=${user.id})}">Edit</a>
-			
-			<div class="card-body d-flex justify-content-center align-items-center">
-				<a th:href="@{/users}" class="btn btn-primary">Back to users</a>
-			</div>
+			<th:block sec:authorize="hasAuthority('ADMIN')">
+				<th>
+
+					<a class="btn btn-primary" th:href="@{assign/{id}(id=${user.id})}">Assign a Ticket</a>
+				</th>
+			</th:block>
 
 
+			<a class="btn btn-success m-1" th:href="@{edit/{id}(id=${user.id})}">Edit Profile</a>
+
+
+			<th:block sec:authorize="hasAuthority('ADMIN')">
+				<div class="card-body d-flex justify-content-center align-items-center">
+					<a th:href="@{/users}" class="btn btn-primary">Back to users</a>
+				</div>
+			</th:block>
+  
 		</main>
 		<footer th:replace="~{fragments/fragments :: footer}">
 

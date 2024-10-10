@@ -24,11 +24,11 @@
 					</form>
 
 					<!--create user button	-->
-				<th:block sec:authorize="hasAuthority('ADMIN')">
-					<div class="mb-3 d-flex ">
-						<a th:href="@{/users/create}" class=" ms-auto me-5 btn btn-lg btn-primary">Add new
-							user</a>
-					</div>
+					<th:block sec:authorize="hasAuthority('ADMIN')">
+						<div class="mb-3 d-flex ">
+							<a th:href="@{/users/create}" class=" ms-auto me-5 btn btn-lg btn-primary">Add new
+								user</a>
+						</div>
 					</th:block>
 
 
@@ -55,7 +55,7 @@
 									<th>Buttons</th>
 									<th>Status</th>
 								</tr>
-								<tr th:each="user : ${users}" th:object="${user}">
+								<tr th:each="user : ${users}" th:if=${!user.notAtWork} th:object="${user}">
 									<th>[[ *{id} ]]</th>
 									<th>[[ *{name} ]]</th>
 									<th>[[*{lastName}]]</th>
@@ -65,51 +65,24 @@
 										<a class="btn btn-success m-1"
 											th:href="@{users/edit/{id}(id=${user.id})}">Edit</a>
 										<th:block th:if="${user.isAvailable()}">
-											<!-- Button trigger modal -->
-									<!--		<button type="button" class="btn btn-warning m-1" data-bs-toggle="modal"
-												th:data-bs-target="'#delete-modal-' + ${user.id}">
-												Delete
-											</button> -->
-											<!-- Modal -->
-											
-									<!--		<div class="modal fade" tabindex="-1" th:id="'delete-modal-' + ${user.id}">
-												<div class="modal-dialog modal-dialog-centered">
-													<div class="modal-content">
-														<div class="modal-header">
-															<h5 class="modal-title">Confirm delete</h5>
-															<button type="button" class="btn-close"
-																data-bs-dismiss="modal" aria-label="Close"></button>
-														</div>
-														<div class="modal-body">
-															<p>Confirm delete of [[${user.name}]]?</p>
-														</div>
-														<div class="modal-footer">
-															<button type="button" class="btn btn-secondary"
-																data-bs-dismiss="modal">Close</button>
-															<form class="d-inline-block"
-																th:action="@{users/delete/{id}(id=${user.id})}"
-																method="POST">
-																<button type="submit"
-																	class="btn btn-danger m-1">Delete</button>
-															</form>
-														</div>
-													</div>
-												</div>
-										<th:block th:unless="${user.isAvailable()}">
-											<button type="button" class="btn btn-warning m-1" disabled>
-												Delete
-											</button>
-										</th:block>
-											</div>-->
+
 										</th:block>
 									</th>
 
 									<th:block th:unless="*{isAvailable}">
-										<th>Working on ticket [[${user.tickets.last.getId()}]]:
-											[[${user.tickets.last.getTitle()}]]</th>
+										<th:block th:if="${user.getTicketsInProgress().size() == 1}">
+											<th>Working on ticket
+												[[${user.getTicketsInProgress().last.getId()}]]:
+												[[${user.getTicketsInProgress().last.getTitle()}]]</th>
+										</th:block>
+										<th:block th:unless="${user.ticketsInProgress.size() == 1}">
+										<th>Working on
+											[[${user.getTicketsInProgress().size()}]] tickets</th>
+										</th:block>
 									</th:block>
 									<th:block th:if="*{isAvailable}">
 										<th>
+											<h4>Available</h4>
 											<a class="btn btn-primary"
 												th:href="@{users/assign/{id}(id=${user.id})}">Assign a Ticket</a>
 

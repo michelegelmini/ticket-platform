@@ -18,7 +18,7 @@
 						method="POST">
 						<div class="mb-3">
 							<select class="form-select" name="ticketId" required>
-								<option th:each="ticket : ${tickets}" th:text="${ticket.title}" th:value="${ticket.id}">
+								<option th:each="ticket : ${tickets}"  th:text="${ticket.title}" th:value="${ticket.id}">
 								</option>
 							</select>
 							<input type="hidden" th:value="*{username}" th:field="*{username}">

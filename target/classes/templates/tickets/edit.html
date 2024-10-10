@@ -63,24 +63,12 @@
 							<div>
 								<label for="select-user" class="form-label">Assign to user:</label>
 								<select id="select-user" class="form-select mb-3" th:field="*{user}">
-									<option th:each="user : ${users}" th:value="${user.id}">[[${user.name}]]
+									<option th:each="user : ${users}" th:if=${!user.notAtWork} th:value="${user.id}">[[${user.name}]]
 										[[${user.lastName}]]: [[${user.username}]]</option>
 								</select>
 							</div>
 
 						</th:block>
-
-						<div class="mb-3">
-							<label for="exampleFormControlTextarea1" class="form-label">Notes</label>
-							<textarea class="form-control" id="notes" rows="3" th:field="*{notes}"
-								th:errorClass="is-invalid"></textarea>
-							<div th:if="${#fields.hasErrors('notes')}" class="invalid-feedback">
-								<ul>
-									<li th:each="err : ${#fields.errors('notes')}" th:text="${err}"></li>
-								</ul>
-							</div>
-						</div>
-
 
 						<div class="mb-3 d-flex justify-content-around">
 							<input type="submit" class="btn btn-primary btn-lg" value="Update ticket">

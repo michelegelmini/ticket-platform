@@ -1,13 +1,18 @@
 package org.lessons.java.ticket_platform.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Set;
 
 import org.hibernate.annotations.Formula;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -45,12 +50,32 @@ public class User {
 	private String picture;
 
 	private boolean isAvailable;
+	
+	private boolean notAtWork;
+
+	public boolean isNotAtWork() {
+		return notAtWork;
+	}
+
+	public void setNotAtWork(boolean notAtWork) {
+		this.notAtWork = notAtWork;
+	}
+
+	@ElementCollection
+	private List<Ticket> ticketsInProgress;
 
 	@ManyToMany(fetch = FetchType.EAGER)
+	@JsonBackReference
 	private Set<Role> roles;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+	@JsonManagedReference
 	private List<Ticket> tickets;
+	
+//	@Formula("(SELECT tickets.id "
+//			+ "from tickets "
+//			+ "INNER JOIN users on tickets.id = users.id "
+//			+ "WHERE tickets.status = 'Doing')")
 
 	@OneToMany(mappedBy = "author")
 	private List<Note> notes;
@@ -152,7 +177,7 @@ public class User {
 	}
 
 	public void addTicket(Ticket ticket) {
-		this.tickets.add(ticket);
+		tickets.add(ticket);
 		ticket.setUser(this);
 	}
 
@@ -163,5 +188,23 @@ public class User {
 	public void setNotes(List<Note> notes) {
 		this.notes = notes;
 	}
+
+	public List<Ticket> getTicketsInProgress() {
+	    if (ticketsInProgress == null) {
+	        ticketsInProgress = new ArrayList<>();
+	    }
+	    ticketsInProgress.clear();
+	    for (Ticket ticket : tickets) {
+	        if(ticket.getStatus().equals("Doing")) {
+	            ticketsInProgress.add(ticket);
+	        }
+	    }
+	    return ticketsInProgress;
+	}
+	    
+
+//	public void setTicketsInProgress(List<Ticket> ticketsInProgress) {
+//		this.ticketsInProgress = ticketsInProgress;
+//	}
 
 }
