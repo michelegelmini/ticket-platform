@@ -29,6 +29,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/categories").hasAuthority("ADMIN")
                         .requestMatchers("/tickets", "/tickets/*").hasAnyAuthority("ADMIN", "USER")
                         .requestMatchers("/pages").permitAll()
+                        .requestMatchers("/api/tickets").permitAll()
                         .requestMatchers("/webjars/**").permitAll()
                         .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().authenticated()

@@ -58,7 +58,7 @@ public class TicketController {
 		model.addAttribute("categories", cService.findAllSortedById());
 		model.addAttribute("username", authentication.getName());
 
-		if (loggedUser.getUsername().equals("admin")) {
+		if (loggedUser.isAdmin()) {
 			//filter by title
 			if (title != null && !title.isEmpty()) {
 				model.addAttribute("ticketTitle", title);
@@ -204,11 +204,8 @@ public class TicketController {
 
 			attributes.addFlashAttribute("deletedMessage",
 					"Ticket with id " + id + ": " + ticketToDelete.getTitle() + ", has been DELETED!");
-
-			return "redirect:/tickets";
-		} else {
-			return "redirect:/tickets";
 		}
+		return "redirect:/tickets";
 	}
 
 	// set to done

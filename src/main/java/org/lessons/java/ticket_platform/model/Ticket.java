@@ -40,6 +40,7 @@ public class Ticket {
 	@NotBlank(message = "TITLE is required")
 	private String title;
 
+	
 	@NotBlank(message = "CONTENT is required")
 	private String content;
 

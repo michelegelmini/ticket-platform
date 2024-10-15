@@ -30,16 +30,12 @@ public class TicketRestController {
 
 	@Autowired
 	private TicketService tService;
-	
-
 
 	@GetMapping
 	public List<Ticket> index(@RequestParam(name = "word", required = false) String word,
 			@RequestParam(name = "category", required = false) String category,
 			@RequestParam(name = "status", required = false) String status, Model model) {
 		List<Ticket> result;
-		
-
 
 	// filter by name
 
@@ -71,24 +67,6 @@ public class TicketRestController {
 		}
 	}
 
-	@PostMapping
-	public Ticket store(@Valid @RequestBody Ticket ticket) {
-		Ticket newTicket = tService.create(ticket);
-		return newTicket;
-	}
-
-	@PutMapping("/{id}")
-	public ResponseEntity<Ticket> update(@Valid @RequestBody Ticket ticket, @PathVariable Integer id) {
-
-		Optional<Ticket> oldTicket = tService.findById(id);
-
-		if (oldTicket.isPresent()) {
-			Ticket foundTicket = tService.update(ticket);
-			return new ResponseEntity<>(foundTicket, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Ticket> delete(@PathVariable Integer id) {
