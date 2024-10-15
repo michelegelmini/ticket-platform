@@ -9,14 +9,15 @@ import jakarta.validation.constraints.NotNull;
 @Entity
 @Table(name="roles")
 public class Role {
-
+//variables
 	@Id
 	private Integer id;
 	
 	@NotNull
 	@NotEmpty
 	private String name;
-
+	
+	//getters and setters
 	public Integer getId() {
 		return id;
 	}

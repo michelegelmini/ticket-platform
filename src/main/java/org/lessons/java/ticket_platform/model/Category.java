@@ -9,7 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+
 
 @Entity
 @Table(name = "categories")
@@ -19,13 +20,14 @@ public class Category {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@NotNull
+	@NotBlank(message = "NAME is required")
 	@Column(unique = true)
 	private String name;
 
 	@OneToMany(mappedBy = "category")
 	private List<Ticket> tickets;
 
+	// getters and setters
 	public Integer getId() {
 		return id;
 	}

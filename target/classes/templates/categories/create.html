@@ -8,19 +8,16 @@
 		<header>
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 		</header>
-		
+
 		<!--CATEGORY CREATE-->
 		<main class="container mb-5">
 			<div class="row">
 				<div class="col-12">
 					<h1 class="py-4 mb-2 text-center">Creating new category</h1>
-
 					<form id="category-form" th:object="${category}" th:action="@{/categories/create}" method="POST">
-
-
 						<div class="mb-3">
 							<label for="exampleFormControlInput1" class="form-label">Title</label>
-							<input type="text" class="form-control" id="name" placeholder="Type your request"
+							<input type="text" class="form-control" id="name" placeholder="Category title" required
 								th:field="*{name}" th:errorClass="is-invalid">
 							<div th:if="${#fields.hasErrors('name')}" class="invalid-feedback">
 								<ul>
@@ -28,25 +25,13 @@
 								</ul>
 							</div>
 						</div>
-
-
-
-					
-
-
 						<div class="mb-3 d-flex justify-content-around">
 							<input type="submit" class="btn btn-primary btn-lg" value="Create category">
 							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">
 						</div>
-
-
-
 					</form>
-
-
-
 					<div class="card-body d-flex justify-content-center align-items-center">
-						<a th:href="@{/categories}" class="btn btn-primary">Back to categories</a>
+						<a th:href="@{/categories}" class="btn btn-primary btn-lg">Back to categories</a>
 					</div>
 				</div>
 			</div>
@@ -55,8 +40,6 @@
 
 		</footer>
 		<th:block th:replace="~{fragments/fragments :: scripts}"></th:block>
-
-
 	</body>
 
 </html>

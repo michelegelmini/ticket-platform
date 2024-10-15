@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,7 +27,6 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "tickets")
@@ -45,7 +45,7 @@ public class Ticket {
 
 	@NotNull
 	@Min(1)
-    @Max(5)
+	@Max(5)
 	private int priority;
 
 	private String status;
@@ -59,8 +59,8 @@ public class Ticket {
 	@JoinColumn(name = "user_id")
 	@JsonBackReference
 	private User user;
-	
-	@OneToMany(mappedBy = "ticket")
+
+	@OneToMany(mappedBy = "ticket", cascade = CascadeType.REMOVE)
 	@JsonManagedReference
 	private List<Note> notes;
 
@@ -109,7 +109,7 @@ public class Ticket {
 	public void setNotes(List<Note> notes) {
 		this.notes = notes;
 	}
-	
+
 	public void addNote(Note note) {
 		this.notes.add(note);
 	}
@@ -139,25 +139,16 @@ public class Ticket {
 	}
 
 	public int getPriority() {
-		
-		if(priority == 0) {
+
+		if (priority == 0) {
 			return 1;
 		} else {
-		return priority;
+			return priority;
 		}
 	}
 
 	public void setPriority(int priority) {
 		this.priority = priority;
-	}
-
-	public void setDoingStatus() {
-		if (user == null || user.getId() == null) {
-			this.setStatus("To do");
-		} else {
-			this.setStatus("Doing");
-		}
-		System.out.println("Status set to: " + this.getStatus());
 	}
 
 	public String getStatus() {
@@ -192,13 +183,23 @@ public class Ticket {
 		this.dateFormatter = dateFormatter;
 	}
 
+	// custom methods
+	public void setDoingStatus() {
+		if (user == null || user.getId() == null) {
+			this.setStatus("To do");
+		} else {
+			this.setStatus("Doing");
+		}
+		System.out.println("Status set to: " + this.getStatus());
+	}
+
 	public String getFormattedCreatedAt() {
 		return createdAt.toLocalDateTime().format(dateFormatter);
 	}
 
 	public String getFormattedUpdatedAt() {
-		if(this.updatedAt != null) {
-		return updatedAt.toLocalDateTime().format(dateFormatter);
+		if (this.updatedAt != null) {
+			return updatedAt.toLocalDateTime().format(dateFormatter);
 		} else {
 			return null;
 		}

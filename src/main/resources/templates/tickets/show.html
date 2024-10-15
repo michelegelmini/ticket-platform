@@ -57,11 +57,6 @@
 					<!--Admin edit and delete buttons-->
 					<th:block sec:authorize="hasAuthority('ADMIN')">
 						<div class="d-flex justify-content-center">
-
-
-
-
-
 							<a class="btn btn-success m-1" th:classappend="${ticket.status == 'Done'} ? 'disabled' : ''"
 								th:href="@{edit/{id}(id=${ticket.id})}">Edit</a>
 
@@ -95,8 +90,6 @@
 							</div>
 						</div>
 					</th:block>
-
-
 				</div>
 
 				<div class="card mb-3">
@@ -107,20 +100,12 @@
 						<th:block th:unless="${ticket.user == null}">
 							<div class="text-center" th:object="${ticket.user}">
 								<h4>Assigned to: [[ *{getFormattedName()} ]]</h4>
-
-
 								<a th:href="@{/users/{id}(id=${ticket.user.id})}" data-bs-toggle="tooltip"
 									data-bs-placement="top" th:title="${ticket.user.getFormattedName()}">
-
-
 									<img class="img-fluid rounded-circle" style="max-width: 100px; height: auto;"
 										th:src="*{picture}+*{id}+'.png'"></img>
 								</a>
-
-
 								<h3 class="card-subtitle mb-2 text-muted">Username: [[ *{username} ]]</h3>
-
-
 								<div class="card-body">
 									<th:block th:if="*{isAvailable && !notAtWork}">
 										<span class="ms-3 text-success"> <i class="fa-solid fa-circle"></i>
@@ -166,14 +151,11 @@
 							th:disabled="${ticket.status == 'Done'}" value="Change User">
 						<input type="submit" class="btn btn-primary" th:if="${ticket.user == null}"
 							value="Assign to User">
-
 					</div>
 					</form>
 					</th:block>
 				</div>
 			</div>
-
-
 
 			<!-- Tabella delle Note -->
 			<div class="mt-3">

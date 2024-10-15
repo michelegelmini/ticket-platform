@@ -18,10 +18,6 @@
 						<img class="img-fluid me-0" th:src="${user.picture}+${user.id}+'.png'"></img>
 						<h1 class="card-title">[[ *{getFormattedName} ]]</h1>
 						<h3 class="card-subtitle mb-2 text-muted">Username: [[ *{username} ]]</h3>
-
-
-
-
 						<div class="card-body">
 							<a class="btn btn-success m-1" th:href="@{/users/{id}(id=${user.id})}">Show Profile</a>
 							<a class="btn btn-danger m-1" th:href="@{/logout}">Logout</a>
@@ -29,9 +25,6 @@
 
 					</div>
 				</div>
-
-
-
 
 				<div class="col-9">
 					<th:block sec:authorize="hasAuthority('ADMIN')">
@@ -45,7 +38,7 @@
 						<div class="mb-3">
 							<label for="exampleFormControlInput1" class="form-label">Username</label>
 							<input type="text" class="form-control" id="username" placeholder="Type your username"
-								th:field="*{username}" th:errorClass="is-invalid">
+								th:field="*{username}" th:errorClass="is-invalid" required>
 							<div th:if="${#fields.hasErrors('username')}" class="invalid-feedback">
 								<ul>
 									<li th:each="err : ${#fields.errors('username')}" th:text="${err}"></li>
@@ -56,7 +49,7 @@
 						<div class="mb-3">
 							<label for="exampleFormControlInput1" class="form-label">Name</label>
 							<input type="text" class="form-control" id="firstName" placeholder="Type your Name"
-								th:field="*{firstName}" th:errorClass="is-invalid">
+								th:field="*{firstName}" th:errorClass="is-invalid" required>
 							<div th:if="${#fields.hasErrors('firstName')}" class="invalid-feedback">
 								<ul>
 									<li th:each="err : ${#fields.errors('firstName')}" th:text="${err}"></li>
@@ -66,7 +59,7 @@
 						<div class="mb-3">
 							<label for="exampleFormControlInput1" class="form-label">Last Name</label>
 							<input type="text" class="form-control" id="lastName" placeholder="Type your Last Name"
-								th:field="*{lastName}" th:errorClass="is-invalid">
+								th:field="*{lastName}" th:errorClass="is-invalid" required>
 							<div th:if="${#fields.hasErrors('lastName')}" class="invalid-feedback">
 								<ul>
 									<li th:each="err : ${#fields.errors('lastName')}" th:text="${err}"></li>

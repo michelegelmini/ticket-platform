@@ -5,12 +5,9 @@ import java.util.List;
 
 import java.util.Set;
 
-import org.hibernate.annotations.Formula;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -18,12 +15,12 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
+
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -52,6 +49,7 @@ public class User {
 
 	private String picture;
 
+	@SuppressWarnings("unused")
 	private boolean isAvailable;
 
 	private boolean notAtWork;
@@ -146,26 +144,6 @@ public class User {
 		this.picture = picture;
 	}
 
-	public void setAvailability() {
-		for (Ticket ticket : tickets) {
-			String statusToCheck = ticket.getStatus();
-			if (statusToCheck.equals("Doing")) {
-				this.setIsAvailable(false);
-			}
-		}
-		this.setIsAvailable(true);
-	}
-
-	public boolean getIsAvailable() {
-		for (Ticket ticket : tickets) {
-			String statusToCheck = ticket.getStatus();
-			if (statusToCheck.equals("Doing")) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	public void setIsAvailable(boolean isAvailable) {
 		this.isAvailable = isAvailable;
 	}
@@ -186,17 +164,38 @@ public class User {
 		this.tickets = tickets;
 	}
 
-	public void addTicket(Ticket ticket) {
-		tickets.add(ticket);
-		ticket.setUser(this);
-	}
-
 	public List<Note> getNotes() {
 		return notes;
 	}
 
 	public void setNotes(List<Note> notes) {
 		this.notes = notes;
+	}
+
+	public void addTicket(Ticket ticket) {
+		tickets.add(ticket);
+		ticket.setUser(this);
+	}
+
+	// custom methods
+	public void setAvailability() {
+		for (Ticket ticket : tickets) {
+			String statusToCheck = ticket.getStatus();
+			if (statusToCheck.equals("Doing")) {
+				this.setIsAvailable(false);
+			}
+		}
+		this.setIsAvailable(true);
+	}
+
+	public boolean getIsAvailable() {
+		for (Ticket ticket : tickets) {
+			String statusToCheck = ticket.getStatus();
+			if (statusToCheck.equals("Doing")) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public List<Ticket> getTicketsInProgress() {
@@ -224,17 +223,15 @@ public class User {
 		}
 		return finishedTickets;
 	}
-	
+
 	public boolean isAdmin() {
 		for (Role role : roles) {
-			if (role.getName().equals("ADMIN")) {	
+			if (role.getName().equals("ADMIN")) {
 				return true;
-			} 
+			}
 		}
 		return false;
 	}
-	
-	
 
 //	public void setTicketsInProgress(List<Ticket> ticketsInProgress) {
 //		this.ticketsInProgress = ticketsInProgress;

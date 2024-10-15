@@ -3,7 +3,6 @@ package org.lessons.java.ticket_platform.security;
 import java.util.List;
 import java.util.Optional;
 
-import org.lessons.java.ticket_platform.model.Ticket;
 import org.lessons.java.ticket_platform.model.User;
 import org.lessons.java.ticket_platform.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

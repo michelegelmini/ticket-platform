@@ -4,39 +4,71 @@
 	<head th:insert="~{fragments/fragments :: head}">
 	</head>
 
-	<body>
+	<body class="d-flex flex-column min-vh-100">
 		<header>
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
 		</header>
+		
+		<!--USER CREATE-->
+		
 		<main class="container">
 			<div class="row">
 				<div class="col-12">
 					<h1 class="py-4 mb-2 text-center">Create user</h1>
 
-					<form id="user-form" th:object="${user}" th:action="@{/users/create}"
-						method="POST">
+					<form id="user-form" th:object="${user}" th:action="@{/users/create}" method="POST">
 						<div class="mb-3">
-							<input type="text" th:value="*{username}" th:field="*{username}">
-							<input type="text" th:value="*{password}" th:field="*{password}">
-							<input type="text" th:value="*{name}" th:field="*{name}">
-							<input type="text" th:value="*{lastName}" th:field="*{lastName}">
-							
+							<div class="mb-3">
+								<label for="exampleFormControlInput1" class="form-label">Username</label>
+								<input type="text" class="form-control" id="username" placeholder="Type your username"
+									th:field="*{username}" th:errorClass="is-invalid" required>
+								<div th:if="${#fields.hasErrors('username')}" class="invalid-feedback">
+									<ul>
+										<li th:each="err : ${#fields.errors('username')}" th:text="${err}"></li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="mb-3">
+								<label for="exampleFormControlInput1" class="form-label">Password</label>
+								<input type="password" class="form-control" id="password" placeholder="Type your password"
+									th:field="*{password}" th:errorClass="is-invalid" required>
+								<div th:if="${#fields.hasErrors('password')}" class="invalid-feedback">
+									<ul>
+										<li th:each="err : ${#fields.errors('password')}" th:text="${err}"></li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="mb-3">
+								<label for="exampleFormControlInput1" class="form-label">Name</label>
+								<input type="text" class="form-control" id="firstName" placeholder="Type your Name"
+									th:field="*{firstName}" th:errorClass="is-invalid" required>
+								<div th:if="${#fields.hasErrors('firstName')}" class="invalid-feedback">
+									<ul>
+										<li th:each="err : ${#fields.errors('firstName')}" th:text="${err}"></li>
+									</ul>
+								</div>
+							</div>
+							<div class="mb-3">
+								<label for="exampleFormControlInput1" class="form-label">Last Name</label>
+								<input type="text" class="form-control" id="lastName" placeholder="Type your Last Name"
+									th:field="*{lastName}" th:errorClass="is-invalid" required>
+								<div th:if="${#fields.hasErrors('lastName')}" class="invalid-feedback">
+									<ul>
+										<li th:each="err : ${#fields.errors('lastName')}" th:text="${err}"></li>
+									</ul>
+								</div>
+							</div>
 
 						</div>
 						<div class="mb-3 d-flex justify-content-around">
-							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">
-
-
-							<!-- Button trigger modal -->
-							<button type="submit" class="btn btn-warning m-1">Create User</button>
-
-
+							<button type="reset" class="btn btn-warning  m-1">Reset fields</button>
+							<button type="submit" class="btn btn-success m-1">Create User</button>
 
 						</div>
 					</form>
-
-
 
 					<div class="card-body d-flex justify-content-center align-items-center">
 						<a th:href="@{/users}" class="btn btn-primary">Back to users</a>

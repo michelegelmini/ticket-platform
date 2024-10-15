@@ -73,7 +73,7 @@
 											<a type="button" th:href="@{users/{id}(id=${user.id})}"
 												data-bs-toggle="tooltip" data-bs-placement="top"
 												th:title="${user.username}">
-												<img class="img-fluid me-0" th:src="@{/img/profile-pic-00.jpg}">
+												<img class="img-fluid rounded-circle" th:src="@{/img/profile-pic-00.jpg}">
 											</a>
 										</th:block>
 										<th:block th:if="*{isAvailable && !notAtWork}"><span class="text-success"><i

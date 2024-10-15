@@ -9,15 +9,24 @@
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 		</header>
 
-
-
 		<!--USER SHOW-->
 		<!--User data SECTION-->
 		<main class="container d-flex" th:object="${user}">
 			<div class="col-md-4 d-flex justify-content-center">
 				<div class="card m-4 d-flex justify-content-center align-items-center">
 					<div class="card-body text-center">
-						<img class="img-fluid me-0" th:src="${user.picture}+${user.id}+'.png'"></img>
+						<th:block th:unless="${user.picture == null}">
+							<a type="button" th:href="@{users/{id}(id=${user.id})}" data-bs-toggle="tooltip"
+								data-bs-placement="top" th:title="${user.username}">
+								<img class="img-fluid me-1 rounded-circle" th:src="${user.picture}+${user.id}+'.png'">
+							</a>
+						</th:block>
+						<th:block th:if="${user.picture == null}">
+							<a type="button" th:href="@{users/{id}(id=${user.id})}" data-bs-toggle="tooltip"
+								data-bs-placement="top" th:title="${user.username}">
+								<img class="img-fluid rounded-circle" th:src="@{/img/profile-pic-00.jpg}">
+							</a>
+						</th:block>
 						<h1 class="card-title">[[ *{getFormattedName()} ]]</h1>
 						<h3 class="card-subtitle mb-2 text-muted">Username: [[ *{username} ]]</h3>
 
@@ -36,8 +45,9 @@
 
 						<div class="card-body">
 							<a class="btn btn-success m-1" th:href="@{edit/{id}(id=${user.id})}">Edit Profile</a>
-							
-							<a class="btn btn-danger m-1" th:href="@{/logout}" th:if="${loggedUserId == user.id}">Logout</a>
+
+							<a class="btn btn-danger m-1" th:href="@{/logout}"
+								th:if="${loggedUserId == user.id}">Logout</a>
 						</div>
 
 					</div>
@@ -59,8 +69,8 @@
 							</form>
 						</th:block>
 					</th:block>
-					
-					
+
+
 					<!--Admin Buttons-->
 					<th:block sec:authorize="hasAuthority('ADMIN')">
 						<div class="card-body">
@@ -89,7 +99,11 @@
 					<th:block th:if="${successMessage != null}">
 						<div th:insert="~{fragments/fragments :: successAlert(${successMessage})}"></div>
 					</th:block>
+					<th:block th:if="${deletedMessage != null}">
+						<div th:insert="~{fragments/fragments :: deletedAlert(${deletedMessage})}"></div>
+					</th:block>
 				</div>
+
 
 
 				<h1 class="text-left mt-4">Working on:</h1>
@@ -246,13 +260,6 @@
 				</table>
 
 			</div>
-
-
-
-
-
-
-
 
 
 		</main>

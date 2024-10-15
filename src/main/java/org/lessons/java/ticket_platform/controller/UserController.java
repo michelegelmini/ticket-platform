@@ -109,7 +109,6 @@ public class UserController {
 
 		model.addAttribute("user", uService.findById(id));
 		model.addAttribute("tickets", tService.findAllSortedById());
-		model.addAttribute("oldPassword", "");
 
 		return "users/edit";
 	}
@@ -123,33 +122,45 @@ public class UserController {
 		User loggedUser = uService.findByUsername(principal.getName());
 		User existingUser = uService.findById(id);
 
+		// caso in cui non ci siano state modifiche
+		if (existingUser.getUsername().equals(updatedFormUser.getUsername())
+				&& existingUser.getName().equals(updatedFormUser.getName())
+				&& existingUser.getLastName().equals(updatedFormUser.getLastName())) {
+
+			attributes.addFlashAttribute("deletedMessage", "You made no edits!");
+
+			return "redirect:/users/" + updatedFormUser.getId();
+		}
+
+		// errori generici di validazione del form (utente nullo)
 		if (bindingResult.hasErrors() || updatedFormUser.getUsername() == null) {
 			model.addAttribute("users", uService.findAllSortedById());
 			return "/users/edit";
-		}
 
-		if (uService.existsByUsername(updatedFormUser.getUsername())) {
+		}
+		
+
+		// username già in uso
+		if (uService.existsByUsername(updatedFormUser.getUsername())
+				&& !updatedFormUser.getUsername().equals(existingUser.getUsername())) {
 			bindingResult.rejectValue("username", "error.username", "Username already in use");
 			return "/users/edit";
 		}
 
 		updatedFormUser.addTicket(ticket);
 		existingUser.setRoles(existingUser.getRoles());
-
 		existingUser.setUsername(updatedFormUser.getUsername());
 		existingUser.setName(updatedFormUser.getName());
 		existingUser.setLastName(updatedFormUser.getLastName());
 
 		uService.update(existingUser);
 
-		attributes.addFlashAttribute("successMessage", "User with id " + updatedFormUser.getId() + ": "
-				+ updatedFormUser.getUsername() + ", has been UPDATED!");
+		attributes.addFlashAttribute("successMessage", updatedFormUser.getFormattedName() + ", has been UPDATED!");
 
 		// controllo per tornare al login nel caso sia l'utente a modificare le proprie
 		// credenziali di accesso
 		if (updatedFormUser.getUsername().equals(loggedUser.getUsername())) {
 			return "redirect:/login";
-
 		} else {
 			return "redirect:/users/" + updatedFormUser.getId();
 		}
@@ -165,21 +176,23 @@ public class UserController {
 		return "users/assign";
 	}
 
-	
-	//metodo assign, una sorta di piccola "edit" per assegnare un ticket partendo da uno user
+	// metodo assign, una sorta di piccola "edit" per assegnare un ticket partendo
+	// da uno user
 	@PostMapping("/{userId}/assign-ticket")
 	public String assignTicketToUser(@PathVariable Integer userId, @RequestParam("ticketId") Integer ticketId,
 			Model model) {
 
 		User user = uService.findById(userId);
-		//ticketId arriva dal form di assign.html
+		// ticketId arriva dal form di assign.html
 		Ticket ticket = tService.findById(ticketId).get();
 
-		//addTicket() è un metodo custom che ho creato per aggiungere un ticket alla lista di ticket dell'utente
+		// addTicket() è un metodo custom che ho creato per aggiungere un ticket alla
+		// lista di ticket dell'utente
 		user.addTicket(ticket);
 		ticket.setUser(user);
-		
-		//una volta assegnato il ticket all'utente modifico il suo stato, sicuramente va in 'Doing'
+
+		// una volta assegnato il ticket all'utente modifico il suo stato, sicuramente
+		// va in 'Doing'
 		ticket.setDoingStatus();
 
 		uService.update(user);
@@ -188,7 +201,7 @@ public class UserController {
 		return "redirect:/tickets/" + ticketId;
 	}
 
-	//metodo per aggiungere una nota ad un ticket partendo dal profilo di un utente
+	// metodo per aggiungere una nota ad un ticket partendo dal profilo di un utente
 	@GetMapping("/{userId}/{ticketId}/addNote")
 	public String addNote(@PathVariable Integer userId, @PathVariable("ticketId") Integer ticketId, Model model,
 			Principal principal, Authentication authentication) {
@@ -201,17 +214,14 @@ public class UserController {
 		addedNote.setTicket(tService.findById(ticketId).get());
 		ticket.addNote(addedNote);
 
-	
 		model.addAttribute("ticketId", ticketId);
 		model.addAttribute("userId", userId);
 		model.addAttribute("note", addedNote);
 
-		return "notes/create"; 
+		return "notes/create";
 	}
-	
-	
-	
 
+	//metodo per impostare il flag "non al lavoro"
 	@PostMapping("/{userId}/setNotAtWork")
 	public String updateUserAtWorkStatus(@PathVariable Integer userId, @RequestParam boolean notAtWork) {
 		User user = uService.findById(userId);

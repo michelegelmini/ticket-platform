@@ -64,7 +64,7 @@
 											th:href="@{categories/edit/{id}(id=${category.id})}">Edit</a>
 										<!-- Button trigger modal -->
 										<button type="button" class="btn btn-warning m-1" data-bs-toggle="modal"
-											th:data-bs-target="'#delete-modal-' + ${category.id}">
+											th:data-bs-target="'#delete-modal-' + ${category.id}" th:disabled="${category.tickets.size() > 0}">
 											Delete
 										</button>
 										<!-- Modal -->

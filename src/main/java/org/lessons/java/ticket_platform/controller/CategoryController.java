@@ -100,22 +100,27 @@ public class CategoryController {
 		
 		cService.update(updatedFormCategory);
 
-		attributes.addFlashAttribute("successMessage", "Ticket with id " + updatedFormCategory.getId() + ": "
+		attributes.addFlashAttribute("successMessage", "Category with id " + updatedFormCategory.getId() + ": "
 				+ updatedFormCategory.getName() + ", has been UPDATED!");
 
-		return "redirect:/tickets";
+		return "redirect:/categories";
 	}
 
 	// delete
 	@PostMapping("/delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes attributes) {
 
-
 		Category categoryToDelete = cService.findById(id);
+		if(categoryToDelete.getTickets().size() > 0) {
+			attributes.addFlashAttribute("deletedMessage",
+					"Can't delete a category with tickets associated!");
+
+			return "redirect:/categories";
+		}
 		cService.delete(id);
 
 		attributes.addFlashAttribute("deletedMessage",
-				"Ticket with id " + id + ": " + categoryToDelete.getName() + ", has been DELETED!");
+				"Category with id " + id + ": " + categoryToDelete.getName() + ", has been DELETED!");
 
 		return "redirect:/categories";
 	}

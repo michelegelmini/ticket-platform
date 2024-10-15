@@ -95,7 +95,7 @@ public class TicketController {
 			}
 		}
 
-		// li inserisco nel modello
+
 		model.addAttribute("tickets", ticketList);
 		model.addAttribute("loggedUserId", loggedUserId);
 		return "/tickets/index";
@@ -118,7 +118,6 @@ public class TicketController {
 		model.addAttribute("loggedUserId", loggedUserId);		
 		
 		if (loggedUser.isAdmin()) {
-		    // Se l'utente è un amministratore, consenti l'accesso
 		    return "/tickets/show"; 
 		}
 		
@@ -170,7 +169,6 @@ public class TicketController {
 		model.addAttribute("categories", cService.findAllSortedById());
 		model.addAttribute("users", uService.findAllSortedById());
 
-		// restituisco la view con il model inserito
 		return "tickets/edit";
 	}
 
@@ -179,14 +177,13 @@ public class TicketController {
 	public String update(@Valid @ModelAttribute("ticket") Ticket updatedFormTicket, BindingResult bindingResult,
 			RedirectAttributes attributes, Model model) {
 
-		// se ci sono errori nel form, mostra gli errori
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("categories", cService.findAllSortedById());
 			model.addAttribute("users", uService.findAllSortedById());
 
 			return "/tickets/edit";
 		}
-		// altrimenti salva il ticket
+
 		updatedFormTicket.setDoingStatus();
 		tService.update(updatedFormTicket);
 

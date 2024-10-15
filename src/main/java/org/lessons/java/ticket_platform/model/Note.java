@@ -22,6 +22,7 @@ import jakarta.validation.constraints.NotNull;
 @Entity
 @Table(name = "notes")
 public class Note {
+	// variables
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -50,6 +51,7 @@ public class Note {
 	@Transient
 	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm | dd-MM-yyyy");
 
+	// getters and setters
 	public Integer getId() {
 		return id;
 	}
@@ -81,10 +83,6 @@ public class Note {
 	public void setAuthor(User author) {
 		this.author = author;
 	}
-	
-	public String getAuthorName(){
-		return author.getName() + " " + author.getLastName();
-	}
 
 	public Timestamp getCreatedAt() {
 		return createdAt;
@@ -108,6 +106,11 @@ public class Note {
 
 	public void setDateFormatter(DateTimeFormatter dateFormatter) {
 		this.dateFormatter = dateFormatter;
+	}
+
+//custom methods
+	public String getAuthorName() {
+		return author.getName() + " " + author.getLastName();
 	}
 
 	public String getFormattedCreatedAt() {
