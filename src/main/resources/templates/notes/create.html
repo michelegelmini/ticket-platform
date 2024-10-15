@@ -4,7 +4,7 @@
 	<head th:insert="~{fragments/fragments :: head}">
 	</head>
 
-	<body>
+	<body class="d-flex flex-column min-vh-100">
 		<header>
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 		</header>
@@ -23,8 +23,8 @@
 							<label for="exampleFormControlInput1" class="form-label">Content</label>
 							
 							<input type="hidden" th:value="${ticketId}" name="ticketId">
-							<input type="hidden" th:value="${userId}" name="userId">
-							<textarea class="form-control" id="name" placeholder="Type your request"
+							<input type="hidden" th:value="${loggedUserId}" name="userId">
+							<textarea class="form-control" id="name" placeholder="Type your note"
 								th:field="*{content}" th:errorClass="is-invalid"></textarea>
 								
 							<div th:if="${#fields.hasErrors('content')}" class="invalid-feedback">
@@ -48,7 +48,7 @@
 
 
 					<div class="card-body d-flex justify-content-center align-items-center">
-						<a th:href="@{/notes}" class="btn btn-primary">Back to notes</a>
+						<a th:href="@{/tickets/{id}(id=${note.ticket.id})}" class="btn btn-primary">Back to Ticket</a>
 					</div>
 				</div>
 			</div>

@@ -66,5 +66,10 @@ public class TicketService {
 	public List<Ticket> findByUserAndStatus(int userId, String status){
 		return repository.findByUserIdAndStatusContainingIgnoreCaseOrderByIdAsc(userId, status);
 	}
+	
+	public List <Ticket> orderByPriority(int priority){
+		return repository.findByPriorityOrderByPriorityDesc(priority);
+	}
+	
 
 }

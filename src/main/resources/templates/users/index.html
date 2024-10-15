@@ -4,33 +4,37 @@
 	<head th:insert="~{fragments/fragments :: head}">
 	</head>
 
-	<body>
+	<body class="d-flex flex-column min-vh-100">
 		<header>
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 		</header>
 
+		<!--USER INDEX-->
+
 		<main class="container">
 			<div class="row">
 				<div class="col-12">
-					<h1>Operators</h1>
-					<!--search bar-->
-					<form th:action="@{/users}" method="GET">
-						<div class="input-group input-group-sm mb-3">
-							<span class="input-group-text" id="inputGroup-sizing-sm">Search user by username</span>
-							<input type="text" class="form-control" name="username">
-							<input type="submit" class="form-control btn btn-sm btn-success">
+					<h1 class="mt-3">Users</h1>
+					<div class="d-flex justify-content-between">
+						<!--search bar-->
+						<form th:action="@{/users}" method="GET" class=" d-flex flex-grow-1">
+							<div class="input-group input-group-sm d-flex flex-grow-1 me-3 mb-3 w-100">
+								<span class="input-group-text" id="inputGroup-sizing-sm">Search user by username</span>
+								<input type="text" class="form-control" name="username">
+								<input type="submit" class="form-control btn btn-sm btn-success">
 
-						</div>
-					</form>
+							</div>
+						</form>
 
-					<!--create user button	-->
-					<th:block sec:authorize="hasAuthority('ADMIN')">
-						<div class="mb-3 d-flex ">
-							<a th:href="@{/users/create}" class=" ms-auto me-5 btn btn-lg btn-primary">Add new
-								user</a>
-						</div>
-					</th:block>
-
+						<!--create user button	-->
+						<th:block sec:authorize="hasAuthority('ADMIN')">
+							<div class="ms-0 mb-3 d-flex ">
+								<a th:href="@{/users/create}" class=" ms-auto me-5 btn btn-lg btn-primary"
+									data-bs-toggle="tooltip" data-bs-placement="top" title="New User"><i
+										class="fa-solid fa-plus"></i></a>
+							</div>
+						</th:block>
+					</div>
 
 					<!--alert after create/edit		-->
 					<th:block th:if="${successMessage != null}">
@@ -48,15 +52,41 @@
 						<div class="row align-items-center ">
 							<table class="table justify-content-apart table-striped align-middle ">
 								<tr>
-									<th>id</th>
+									<th>Availability</th>
 									<th>Name</th>
 									<th>Last Name</th>
 									<th>Username</th>
 									<th>Buttons</th>
 									<th>Status</th>
 								</tr>
-								<tr th:each="user : ${users}" th:if=${!user.notAtWork} th:object="${user}">
-									<th>[[ *{id} ]]</th>
+								<tr th:each="user : ${users}" th:object="${user}">
+									<th>
+										<th:block th:unless="${user.picture == null}">
+											<a type="button" th:href="@{users/{id}(id=${user.id})}"
+												data-bs-toggle="tooltip" data-bs-placement="top"
+												th:title="${user.username}">
+												<img class="img-fluid me-0 rounded-circle" th:src="${user.picture}+${user.id}+'.png'">
+											</a>
+										</th:block>
+										<th:block th:if="${user.picture == null}">
+											<a type="button" th:href="@{users/{id}(id=${user.id})}"
+												data-bs-toggle="tooltip" data-bs-placement="top"
+												th:title="${user.username}">
+												<img class="img-fluid me-0" th:src="@{/img/profile-pic-00.jpg}">
+											</a>
+										</th:block>
+
+										<th:block th:if="*{isAvailable && !notAtWork}">
+											<span class="ms-3 text-success"> <i class="fa-solid fa-circle"></i> </span>
+										</th:block>
+										<th:block th:if="*{!isAvailable && !notAtWork }">
+											<span class="ms-3 text-warning"> <i class="fa-solid fa-circle"></i> </span>
+										</th:block>
+										<th:block th:if="*{notAtWork}">
+											<span class="ms-3 text-danger"> <i class="fa-solid fa-circle"></i> </span>
+										</th:block>
+
+									</th>
 									<th>[[ *{name} ]]</th>
 									<th>[[*{lastName}]]</th>
 									<th>[[*{username}]]</th>
@@ -64,9 +94,7 @@
 										<a class="btn btn-primary m-1" th:href="@{users/{id}(id=${user.id})}">Show</a>
 										<a class="btn btn-success m-1"
 											th:href="@{users/edit/{id}(id=${user.id})}">Edit</a>
-										<th:block th:if="${user.isAvailable()}">
 
-										</th:block>
 									</th>
 
 									<th:block th:unless="*{isAvailable}">
@@ -76,16 +104,20 @@
 												[[${user.getTicketsInProgress().last.getTitle()}]]</th>
 										</th:block>
 										<th:block th:unless="${user.ticketsInProgress.size() == 1}">
-										<th>Working on
-											[[${user.getTicketsInProgress().size()}]] tickets</th>
+											<th>Working on
+												[[${user.getTicketsInProgress().size()}]] tickets</th>
 										</th:block>
 									</th:block>
-									<th:block th:if="*{isAvailable}">
+									<th:block th:if="*{isAvailable && !notAtWork}">
 										<th>
-											<h4>Available</h4>
 											<a class="btn btn-primary"
 												th:href="@{users/assign/{id}(id=${user.id})}">Assign a Ticket</a>
-
+										</th>
+									</th:block>
+									<th:block th:if="*{notAtWork}">
+										<th>
+											<button class="btn btn-primary" disabled
+												th:href="@{users/assign/{id}(id=${user.id})}">Assign a Ticket</button>
 										</th>
 									</th:block>
 

@@ -2,27 +2,203 @@
 <html xmins:th="http://www.thymeleaf.org">
 
 	<head th:insert="~{fragments/fragments :: head}">
+
 	</head>
 
-	<body>
+	<body class="d-flex flex-column min-vh-100">
 		<header>
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 		</header>
-		<!--TICKET SHOW-->
-		<main class="container text-center">
-			<div class="mb-3" th:object="${ticket}">
-				<h1>[[ *{title} ]]</h1>
-				<h3>[[ *{content} ]]</h3>
-				<h4>Status: [[*{status}]]</h4>
-				<th:block th:if="${ticket.user == null}">
-					<h4 th:text="'To be assigned'"></h4>
-				</th:block>
-				<th:block th:unless="${ticket.user == null}">
-					<h4 th:text="'Change user'"></h4>
-				</th:block>
-				<th:block th:unless="${ticket.user == null}">
-					<h4>Assigned to: [[*{user.username}]]</h4>
-				</th:block>
+
+		<!-- TICKET SHOW -->
+		<main class="container">
+			<div class="mb-3 container text-left my-4 d-flex justify-content-between" th:object="${ticket}">
+
+				<div class="card mb-3 col-6">
+					<div class="card-body">
+						<h1 class="mt-2">[[ *{title} ]]</h1>
+						<p class="pb-4">[[ *{content} ]]</p>
+
+						<th:block class="mb-5" th:switch="*{priority}">
+							<div th:case="1">
+								<h3 style="min-width: 100%; text-align: center;">
+									<span class="badge bg-primary text-white">Not Urgent</span>
+								</h3>
+							</div>
+							<div th:case="2">
+								<h3 style="min-width: 100%; text-align: center;">
+									<span class="badge bg-info text-white">Moderately Urgent</span>
+								</h3>
+
+							</div>
+							<div th:case="3">
+								<h3 style="min-width: 100%; text-align: center;">
+									<span class="badge bg-warning text-white">Urgent</span>
+									</span>
+
+							</div>
+							<div th:case="4">
+								<h3 style="min-width: 100%; text-align: center;">
+									<span class="badge bg-orange text-white">Very Urgent</span>
+								</h3>
+
+							</div>
+							<div th:case="5">
+								<h3 style="min-width: 100%; text-align: center;">
+									<span class="badge bg-danger text-white">Extremely Urgent</span>
+								</h3>
+
+							</div>
+						</th:block>
+
+						<h4 class="mt-5">Status: [[*{status}]]</h4>
+					</div>
+
+					<!--Admin edit and delete buttons-->
+					<th:block sec:authorize="hasAuthority('ADMIN')">
+						<div class="d-flex justify-content-center">
+
+
+
+
+
+							<a class="btn btn-success m-1" th:classappend="${ticket.status == 'Done'} ? 'disabled' : ''"
+								th:href="@{edit/{id}(id=${ticket.id})}">Edit</a>
+
+							<!-- Button trigger modal -->
+							<button type="button" class="btn btn-warning m-1" data-bs-toggle="modal"
+								th:data-bs-target="'#delete-modal-' + ${ticket.id}">
+								Delete
+							</button>
+							<!-- Modal -->
+							<div class="modal fade" tabindex="-1" th:id="'delete-modal-' + ${ticket.id}">
+								<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title">Confirm delete</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal"
+												aria-label="Close"></button>
+										</div>
+										<div class="modal-body">
+											<p>Confirm delete of [[${ticket.title}]]?</p>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary"
+												data-bs-dismiss="modal">Close</button>
+											<form class="d-inline-block" th:action="@{delete/{id}(id=${ticket.id})}"
+												method="POST">
+												<button type="submit" class="btn btn-danger m-1">Delete</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</th:block>
+
+
+				</div>
+
+				<div class="card mb-3">
+					<div class="card-body">
+						<th:block th:if="${ticket.user == null}">
+							<h4 th:text="'To be assigned'"></h4>
+						</th:block>
+						<th:block th:unless="${ticket.user == null}">
+							<div class="text-center" th:object="${ticket.user}">
+								<h4>Assigned to: [[ *{getFormattedName()} ]]</h4>
+								<img class="img-fluid rounded-circle" style="max-width: 100px; height: auto;"
+									th:src="*{picture}+*{id}+'.png'"></img>
+								<h3 class="card-subtitle mb-2 text-muted">Username: [[ *{username} ]]</h3>
+
+
+								<div class="card-body">
+									<th:block th:if="*{isAvailable && !notAtWork}">
+										<span class="ms-3 text-success"> <i class="fa-solid fa-circle"></i>
+											Available</span>
+									</th:block>
+									<th:block th:if="*{!isAvailable && !notAtWork }">
+										<span class="ms-3 text-warning"> <i class="fa-solid fa-circle"></i>
+											Working</span>
+									</th:block>
+									<th:block th:if="*{notAtWork}">
+										<span class="ms-3 text-danger"> <i class="fa-solid fa-circle"></i> Not
+											Working</span>
+									</th:block>
+								</div>
+							</div>
+						</th:block>
+
+						<!--Admin change user button-->
+						<th:block sec:authorize="hasAuthority('ADMIN')">
+							<h4 th:if="${ticket.user != null}" th:text="'Change user'"></h4>
+							<form id="ticket-form" th:object="${ticket}"
+								th:action="@{/tickets/edit/{id}(id = ${ticket.id})}" method="POST" class="mb-3">
+								<div class="">
+									<div class="">
+										<label for="select-user" class="form-label">Assign to user:</label>
+										<select id="select-user" class="form-select mb-3"th:disabled="${ticket.status == 'Done'}" th:field="*{user}">
+											<option th:each="user : ${users}" th:if="${!user.notAtWork}"
+												th:value="${user.id}">
+												[[${user.name}]] [[${user.lastName}]]: [[${user.username}]]
+											</option>
+										</select>
+									</div>
+								</div>
+					</div>
+					<div class="d-flex justify-content-center align-items-end p-0 mb-1">
+						<input type="hidden" th:value="*{title}" th:field="*{title}">
+						<input type="hidden" th:value="*{content}" th:field="*{content}">
+						<input type="hidden" th:value="*{category.id}" th:field="*{category.id}">
+						<input type="hidden" th:value="*{status}" th:field="*{status}">
+						<input type="hidden" th:value="*{priority}" th:field="*{priority}">
+						<input type="submit" class="btn btn-primary" th:if="${ticket.user != null}" th:disabled="${ticket.status == 'Done'}" value="Change User">
+						<input type="submit" class="btn btn-primary" th:if="${ticket.user == null}"
+							value="Assign to User">
+
+					</div>
+					</form>
+					</th:block>
+				</div>
+			</div>
+
+
+
+			<!-- Tabella delle Note -->
+			<div class="mt-3">
+				<h5>Notes:</h5>
+				<table class="table table-striped mt-2 align-middle">
+					<thead>
+						<tr>
+							<th colspan="2">Note</th>
+							<th></th>
+							<th>Author</th>
+							<th>Created At</th>
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:each="note : ${notes}">
+							<tr>
+								<td colspan="2">[[${note.content}]]</td>
+								<th></th>
+								<td>
+									<img class="img-fluid rounded-circle" style="max-width: 100px; height: auto;"
+										th:src="${note.getAuthor().getPicture()}+${note.getAuthor().getId()}+'.png'"></img>
+									[[${note.getAuthorName()}]]
+								</td>
+								<td>[[${note.getFormattedCreatedAt()}]]</td>
+							</tr>
+						</th:block>
+						<th:block th:if="${notes.size() == 0}">
+							<tr>
+								<td colspan="5" class="text-center">No notes added yet.</td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="d-flex justify-content-between">
 				<form th:action="@{/users/{userId}/{ticketId}/addNote(userId=${loggedUserId}, ticketId=${ticket.id})}"
 					method="get">
 					<input type="hidden" th:value="${ticketId}" th:field="${ticket.id}" name="ticketId">
@@ -30,81 +206,30 @@
 					<input type="submit" class="btn btn-primary btn-lg" value="Add Note"></input>
 				</form>
 
-				<p class="btn btn-warning" th:each="note : ${notes}">[[${note.content}]] by [[${note.getAuthorName()}]]
-					created at [[${note.getFormattedCreatedAt()}]]</p>
-
-
-
-				<th:block th:if="${ticket.user != null}">
-					<form th:action="@{/tickets/done/{id}(id=${ticket.id})}" method="post">
+				<th:block th:if="${ticket.user != null && ticket.status != 'Done'}">
+					<form th:action="@{/tickets/done/{id}(id=${ticket.id})}" method="post" class="mt-3">
 						<input type="submit" class="btn btn-success btn-lg" value="Set to Done">
 					</form>
 				</th:block>
+
 			</div>
 
 
-			<!--ADMIN relative (edit and delete buttons)-->
+
+			<!-- ADMIN relative (edit and delete buttons) -->
 			<th:block sec:authorize="hasAuthority('ADMIN')">
-				<form id="ticket-form" th:object="${ticket}" th:action="@{/tickets/edit/{id}(id = ${ticket.id})}"
-					method="POST">
-					<div>
-						<label for="select-user" class="form-label">Assign to user:</label>
-						<select id="select-user" class="form-select mb-3" th:field="*{user}">
-							<option th:each="user : ${users}" th:if=${!user.notAtWork} th:value="${user.id}">[[${user.name}]]
-								[[${user.lastName}]]: [[${user.username}]]</option>
-						</select>
-					</div>
-					<input type="hidden" th:value="*{title}" th:field="*{title}">
-					<input type="hidden" th:value="*{content}" th:field="*{content}">
-					<input type="hidden" th:value="*{category.id}" th:field="*{category.id}">
-					<input type="hidden" th:value="*{status}" th:field="*{status}">
 
-					<input type="submit" class="btn btn-primary btn-lg" value="Assign to User">
-				</form>
 
-				<a class="btn btn-success m-1" th:href="@{edit/{id}(id=${ticket.id})}">Edit</a>
 
-				<!-- Button trigger modal -->
-				<button type="button" class="btn btn-warning m-1" data-bs-toggle="modal"
-					th:data-bs-target="'#delete-modal-' + ${ticket.id}">
-					Delete
-				</button>
-				<!-- Modal -->
-				<div class="modal fade" tabindex="-1" th:id="'delete-modal-' + ${ticket.id}">
-					<div class="modal-dialog modal-dialog-centered">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title">Confirm delete</h5>
-								<button type="button" class="btn-close" data-bs-dismiss="modal"
-									aria-label="Close"></button>
-							</div>
-							<div class="modal-body">
-								<p>Confirm delete of [[${ticket.title}]]?</p>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-								<form class="d-inline-block" th:action="@{delete/{id}(id=${ticket.id})}" method="POST">
-									<button type="submit" class="btn btn-danger m-1">Delete</button>
-								</form>
-							</div>
-						</div>
-					</div>
+				<!--//ADMIN relative (edit and delete buttons)-->
+
+				<div class="card-body d-flex justify-content-center align-items-center mt-4">
+					<a th:href="@{/tickets}" class="btn btn-primary btn-lg">Back to tickets</a>
 				</div>
-			</th:block>
-			<!--//ADMIN relative (edit and delete buttons)-->
-
-			<div class="card-body d-flex justify-content-center align-items-center">
-				<a th:href="@{/tickets}" class="btn btn-primary">Back to tickets</a>
-			</div>
-
-
 		</main>
-		<footer th:replace="~{fragments/fragments :: footer}">
 
-		</footer>
+		<footer th:replace="~{fragments/fragments :: footer}"></footer>
 		<th:block th:replace="~{fragments/fragments :: scripts}"></th:block>
-
-
 	</body>
 
 </html>

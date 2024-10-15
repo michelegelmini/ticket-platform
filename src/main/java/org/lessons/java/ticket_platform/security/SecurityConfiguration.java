@@ -16,18 +16,28 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
+	@SuppressWarnings("removal")
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requests -> requests
-        		.requestMatchers("/tickets/create").hasAuthority("ADMIN")
-                .requestMatchers("/tickets/edit/*").hasAnyAuthority("ADMIN", "USER")
-                .requestMatchers(HttpMethod.POST, "/tickets/**", "/tickets/edit/**").hasAnyAuthority("ADMIN", "USER")
-                .requestMatchers(HttpMethod.POST, "/users/**").hasAnyAuthority("ADMIN", "USER")
-                .requestMatchers(HttpMethod.POST, "/categories/**").hasAuthority("ADMIN")
-                .requestMatchers("/users").hasAnyAuthority("ADMIN", "USER").requestMatchers("/categories").hasAuthority("ADMIN")
-                .requestMatchers("/tickets", "tickets/*").hasAnyAuthority("ADMIN", "USER")
-                .requestMatchers("/**").permitAll()
-                .requestMatchers("/webjars/**").permitAll()).formLogin(withDefaults()).logout(withDefaults()).exceptionHandling(withDefaults()).csrf().disable();
+                        .requestMatchers("/tickets/create").hasAuthority("ADMIN")
+                        .requestMatchers("/tickets/edit/*").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/tickets/**", "/tickets/edit/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/users/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/categories/**").hasAuthority("ADMIN")
+                        .requestMatchers("/users").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/categories").hasAuthority("ADMIN")
+                        .requestMatchers("/tickets", "/tickets/*").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/pages/error").permitAll()
+                        .requestMatchers("/webjars/**").permitAll()
+                        .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**").permitAll()
+                        .anyRequest().authenticated()
+        )
+        .exceptionHandling(handling -> handling
+                .accessDeniedPage("/pages/error"))
+                .formLogin(withDefaults())
+                .logout(withDefaults())
+                .csrf(csrf -> csrf.disable());
 		return http.build();
 	}
 

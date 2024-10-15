@@ -44,7 +44,8 @@ public class TicketController {
 	@GetMapping
 	public String index(Model model, @RequestParam(name = "title", required = false) String title,
 			@RequestParam(name = "category", required = false) Category category,
-			@RequestParam(name = "status", required = false) String status, Authentication authentication,
+			@RequestParam(name = "status", required = false) String status,
+			Authentication authentication,
 			Principal principal) {
 
 		List<Ticket> ticketList;
@@ -102,15 +103,26 @@ public class TicketController {
 	// show
 	@GetMapping("/{id}")
 	public String show(@PathVariable("id") Integer ticketId, Model model, Principal principal, Authentication authentication) {
-		model.addAttribute("notes", nService.findByTicketId(ticketId));
 		
+		Ticket ticket = tService.findById(ticketId).get();
+		User loggedUser = uService.findByUsername(principal.getName());
+		int loggedUserId = loggedUser.getId();
+		
+		
+		model.addAttribute("notes", nService.findByTicketId(ticketId));
 		model.addAttribute("ticket", tService.findSelectedById(ticketId));
 		model.addAttribute("users", uService.findAllSortedById());
 		model.addAttribute("categories", cService.findAllSortedById());
+		model.addAttribute("loggedUserId", loggedUserId);		
 		
-		User loggedUser = uService.findByUsername(principal.getName());
-		int loggedUserId = loggedUser.getId();
-		model.addAttribute("loggedUserId", loggedUserId);
+		if (loggedUser.getUsername().equals("admin")) {
+			return "/tickets/show";
+		} else if (ticket.getUser() == null) {
+			return "/pages/error"; 
+		}else if (!ticket.getUser().getId().equals(loggedUserId) && !loggedUser.getUsername().equals("admin")) {
+			return "/pages/error"; 
+	    }
+	
 		return "/tickets/show";
 	}
 
@@ -175,7 +187,7 @@ public class TicketController {
 		attributes.addFlashAttribute("successMessage", "Ticket with id " + updatedFormTicket.getId() + ": "
 				+ updatedFormTicket.getTitle() + ", has been UPDATED!");
 
-		return "redirect:/tickets";
+		return "redirect:/tickets/" + updatedFormTicket.getId();
 	}
 
 	// delete

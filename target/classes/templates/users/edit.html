@@ -4,37 +4,84 @@
 	<head th:insert="~{fragments/fragments :: head}">
 	</head>
 
-	<body>
+	<body class="d-flex flex-column min-vh-100">
 		<header>
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
 		</header>
-		<main class="container">
-			<div class="row">
-				<div class="col-12">
-					<h1 class="py-4 mb-2 text-center">Editing user [[${user.username}]]</h1>
+		<main class="container" th:object="${user}">
+			<div class="d-flex justify-content-around">
+				<div class="col-3 card m-4 d-flex justify-content-center align-items-center">
+					<div class="card-body text-center">
+						<img class="img-fluid me-0" th:src="${user.picture}+${user.id}+'.png'"></img>
+						<h1 class="card-title">[[ *{name} ]] [[*{lastName}]]</h1>
+						<h3 class="card-subtitle mb-2 text-muted">Username: [[ *{username} ]]</h3>
+
+
+
+
+						<div class="card-body">
+							<a class="btn btn-success m-1" th:href="@{/users/{id}(id=${user.id})}">Show Profile</a>
+							<a class="btn btn-danger m-1" th:href="@{/logout}">Logout</a>
+						</div>
+
+					</div>
+				</div>
+
+
+
+
+				<div class="col-9">
+					<h1 class="py-4 mb-2 text-center">Editing [[ *{getFormattedName()}]]: [[${user.username}]]</h1>
 
 					<form id="user-form" th:object="${user}" th:action="@{/users/edit/{id}(id=${user.id})}"
 						method="POST">
 						<div class="mb-3">
-							<input type="text" th:value="*{username}" th:field="*{username}">
-							<input type="text" th:value="*{password}" th:field="*{password}">
-							<input type="text" th:value="*{name}" th:field="*{name}">
-							<input type="text" th:value="*{lastName}" th:field="*{lastName}">
-
-							<input type="hidden" th:value="*{tickets}" th:field="*{tickets}">
-
-
+							<label for="exampleFormControlInput1" class="form-label">Username</label>
+							<input type="text" class="form-control" id="username" placeholder="Type your username"
+								th:field="*{username}" th:errorClass="is-invalid">
+							<div th:if="${#fields.hasErrors('username')}" class="invalid-feedback">
+								<ul>
+									<li th:each="err : ${#fields.errors('username')}" th:text="${err}"></li>
+								</ul>
+							</div>
 						</div>
+						
+						<div class="mb-3">
+							<label for="exampleFormControlInput1" class="form-label">Name</label>
+							<input type="text" class="form-control" id="firstName" placeholder="Type your Name"
+								th:field="*{firstName}" th:errorClass="is-invalid">
+							<div th:if="${#fields.hasErrors('firstName')}" class="invalid-feedback">
+								<ul>
+									<li th:each="err : ${#fields.errors('firstName')}" th:text="${err}"></li>
+								</ul>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="exampleFormControlInput1" class="form-label">Last Name</label>
+							<input type="text" class="form-control" id="lastName" placeholder="Type your Last Name"
+								th:field="*{lastName}" th:errorClass="is-invalid">
+							<div th:if="${#fields.hasErrors('lastName')}" class="invalid-feedback">
+								<ul>
+									<li th:each="err : ${#fields.errors('lastName')}" th:text="${err}"></li>
+								</ul>
+							</div>
+						</div>
+
+						<input type="hidden" th:value="*{tickets}" th:field="*{tickets}">
+						<input type="hidden" th:value="*{password}" th:field="*{password}">
+						<input type="hidden" th:value="*{picture}" th:field="*{picture}">
+
+
 						<div class="mb-3 d-flex justify-content-around">
-							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">
+
 
 
 							<!-- Button trigger modal -->
-							<button type="button" class="btn btn-warning m-1" data-bs-toggle="modal"
-								th:data-bs-target="'#update-modal-' + ${user.id}" >Update User
+							<a type="button" class="btn btn-success" data-bs-toggle="modal"
+								th:data-bs-target="'#update-modal-' + ${user.id}">Update User
 
-							</button>
+							</a>
 
 							<!-- Modal -->
 							<div class="modal fade" tabindex="-1" th:id="'update-modal-' + ${user.id}">
@@ -51,34 +98,39 @@
 										<div class="modal-footer">
 											<button type="button" class="btn btn-secondary"
 												data-bs-dismiss="modal">Close</button>
-											<form class="d-inline-block" th:action="@{/users/edit/{id}(id=${user.id})}" method="POST">
-												<button type="submit" class="btn btn-danger m-1" value="Update user">Confirm</button>
+											<form class="d-inline-block" th:action="@{/users/edit/{id}(id=${user.id})}"
+												method="POST">
+												<button type="submit" class="btn btn-danger m-1"
+													value="Update user">Confirm</button>
 											</form>
 										</div>
 									</div>
 								</div>
 							</div>
 
+							<input type="reset" class="btn btn-warning btn" value="Reset fields">
+
+
+							<a th:href="@{/users}" class="btn btn-primary">Back to users</a>
+
 						</div>
 
-
-
-
-
-
-
-
-
-
-					</form>
-
-
-
-					<div class="card-body d-flex justify-content-center align-items-center">
-						<a th:href="@{/users}" class="btn btn-primary">Back to users</a>
-					</div>
 				</div>
+
+
+
+
 			</div>
+
+
+
+
+
+
+
+
+
+
 		</main>
 		<footer th:replace="~{fragments/fragments :: footer}">
 

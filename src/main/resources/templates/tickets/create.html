@@ -4,7 +4,7 @@
 	<head th:insert="~{fragments/fragments :: head}">
 	</head>
 
-	<body>
+	<body class="d-flex flex-column min-vh-100">
 		<header>
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
@@ -37,19 +37,23 @@
 								</ul>
 							</div>
 						</div>
-						
+
 						<div class="mb-3">
 							<label for="customRange3" class="form-label">Priority: </label>
 							<input type="range" class="form-range" th:value="*{priority}" min="1" max="5" step="1"
 								id="priority" th:field="*{priority}"
 								oninput="this.nextElementSibling.value = this.value">
-							<output>[[*{priority}]]</output>
+							<output th:text="*{priority}">1</output>
 							<div th:if="${#fields.hasErrors('priority')}" class="invalid-feedback">
 								<ul>
 									<li th:each="err : ${#fields.errors('priority')}" th:text="${err}"></li>
 								</ul>
 							</div>
 						</div>
+
+
+
+
 
 
 						<div>
@@ -60,15 +64,16 @@
 							</select>
 						</div>
 						<div>
-							<select class="form-select mb-3" th:field="*{user}">
-								<option th:each="user : ${users}" th:if=${!user.notAtWork} th:text="${user.username}" th:value="${user.id}">
+							<select id="select-user" class="form-select mb-3" th:field="*{user}">
+								<option th:each="user : ${users}" th:if="${!user.notAtWork}" th:value="${user.id}">
+									[[${user.name}]] [[${user.lastName}]]: [[${user.username}]]
 								</option>
 							</select>
-						
-						<div class="mb-3 d-flex justify-content-around">
-							<input type="submit" class="btn btn-primary btn-lg" value="Update ticket">
-							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">
-						</div>
+
+							<div class="mb-3 d-flex justify-content-around">
+								<input type="submit" class="btn btn-primary btn-lg" value="Create ticket">
+								<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">
+							</div>
 
 
 					</form>
@@ -87,6 +92,6 @@
 		<th:block th:replace="~{fragments/fragments :: scripts}"></th:block>
 
 
-	</body>
+		</ class="d-flex flex-column min-vh-100>
 
 </html>

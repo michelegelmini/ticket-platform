@@ -63,6 +63,9 @@ public class User {
 
 	@ElementCollection
 	private List<Ticket> ticketsInProgress;
+	
+	@ElementCollection
+	private List<Ticket> finishedTickets;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JsonBackReference
@@ -127,6 +130,11 @@ public class User {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+	
+	public String getFormattedName() {
+		return this.firstName + " " + this.lastName;
+	}
+	
 
 	public String getPicture() {
 		return picture;
@@ -146,6 +154,10 @@ public class User {
 		this.setAvailable(true);	
 	}
 
+	public boolean getIsAvailable() {
+		return isAvailable;
+	}
+	
 	public boolean isAvailable() {
 		for (Ticket ticket : tickets) {
 			String statusToCheck = ticket.getStatus();
@@ -200,6 +212,19 @@ public class User {
 	        }
 	    }
 	    return ticketsInProgress;
+	}
+	
+	public List<Ticket> getfinishedTickets(){
+		if (finishedTickets == null) {
+			finishedTickets = new ArrayList<>();
+	    }
+		finishedTickets.clear();
+	    for (Ticket ticket : tickets) {
+	        if(ticket.getStatus().equals("Done")) {
+	        	finishedTickets.add(ticket);
+	        }
+	    }
+	    return finishedTickets;
 	}
 	    
 

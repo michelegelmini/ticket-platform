@@ -1,0 +1,71 @@
+:root {
+	--bs-primary: #365B78 !important;
+	--bs-border-radius: 0;
+	--bs-border-radius-sm: 0;
+	--bs-btn-hover-bg: rgb(111, 167, 194) !important;
+
+
+}
+
+.btn-primary:hover {
+    background-color: rgb(70, 108, 127) !important; 
+    border-color: rgb(70, 108, 127) !important; 
+	}
+
+
+.btn-primary {
+	background-color: var(--bs-primary) !important;
+	border-color: var(--bs-primary) !important;
+	--bs-btn-hover-bg: rgb(111, 167, 194) !important;
+	
+}
+.bg-primary {
+	background-color: var(--bs-primary) !important;
+	border-color: var(--bs-primary) !important;
+	--bs-btn-hover-bg: rgb(111, 167, 194) !important;
+	
+}
+
+.bg-orange{
+	background-color: orange;
+}
+
+.btn-outline-primary {
+	border-color: var(--bs-primary) !important;
+	--bs-btn-color: var(--bs-primary);
+	--bs-btn-border-color: var(--bs-primary);
+	--bs-btn-hover-bg: rgb(85, 146, 194) !important;
+}
+
+.text-primary {
+	color: var(--bs-primary) !important;/
+}
+
+.badge{
+	min-width: 100%; 
+	text-align: center;
+}
+
+.mg-badge{
+	min-width: auto; 
+}
+
+.btn {
+	border-radius: 0;
+
+		text-align: center;
+}
+
+.input-group {
+	border-radius: 0 !important;
+}
+
+body {
+	font-family: 'Raleway', sans-serif;
+}
+
+table img {
+	height: 50%;
+	max-height: 50px;
+	width: auto;
+}

@@ -133,7 +133,12 @@ public class Ticket {
 	}
 
 	public int getPriority() {
+		
+		if(priority == 0) {
+			return 1;
+		} else {
 		return priority;
+		}
 	}
 
 	public void setPriority(int priority) {

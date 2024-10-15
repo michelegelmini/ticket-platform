@@ -3,6 +3,7 @@
 
 	<head th:fragment="head">
 		<title>BlueHorizon Airlines</title>
+		<link rel="icon" type="image/x-icon" th:href="@{/img/icon.jpeg}">
 
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
@@ -10,6 +11,20 @@
 
 		<!-- Bootstrap CSS -->
 		<link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.3/css/bootstrap.min.css}" />
+
+		<!--Custom CSS-->
+		<link rel="stylesheet" th:href="@{/css/style.css}"/>
+		
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+		
+		<!--FontAwesome-->
+		<script src="https://kit.fontawesome.com/cdcc0fe8e2.js" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
 	</head>
 
 	<body>
@@ -34,13 +49,15 @@
 		<th:block class="" th:fragment="footer">
 			<!-- Footer content-->
 
-			<footer class="footer bg-dark text-secondary p-3 text-center d-flex justify-content-center align-items-center">
-				<div class="">
-					<span>© 2024 - Made with love in Verona</span>
-				</div>
+			<footer
+				class="footer bg-dark text-secondary p-4 text-center d-flex justify-content-around align-items-center mt-auto">
+
+				<span>© 2024 - Made with love in Verona</span>
+				<a class="nav-link flex-end" th:href="@{/logout}">Logout</a>
 
 
-				
+
+
 			</footer>
 
 		</th:block>

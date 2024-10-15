@@ -91,8 +91,8 @@ public class UserController {
 	// create
 	@GetMapping("/create")
 	public String create(Model model) {
-		model.addAttribute("user", new Ticket());
-		model.addAttribute("categories", uService.findAllSortedById());
+		model.addAttribute("user", new User());
+
 		return "/users/create";
 	}
 
@@ -102,7 +102,7 @@ public class UserController {
 			RedirectAttributes attributes, Model model) {
 
 		if (bindingResult.hasErrors()) {
-			model.addAttribute("categories", uService.findAllSortedById());
+			model.addAttribute("users", uService.findAllSortedById());
 			return "/users/create";
 		}
 		uService.create(formUser);
@@ -117,6 +117,7 @@ public class UserController {
 
 		model.addAttribute("user", uService.findById(id));
 		model.addAttribute("tickets", tService.findAllSortedById());
+		model.addAttribute("oldPassword", "");
 
 		// restituisco la view con il model inserito
 		return "users/edit";
@@ -125,8 +126,8 @@ public class UserController {
 	// update
 	@PostMapping("/edit/{id}")
 	public String update(@PathVariable("id") Integer id, @Valid @ModelAttribute("user") User updatedFormUser,
-			Ticket ticket, RedirectAttributes attributes, Model model, Authentication authentication,
-			Principal principal) {
+		 Ticket ticket, RedirectAttributes attributes, Model model,
+			Authentication authentication, BindingResult bindingResult, Principal principal) {
 
 		List<Ticket> ticketList;
 		User loggedUser = uService.findByUsername(principal.getName());
@@ -139,9 +140,10 @@ public class UserController {
 		existingUser.setRoles(existingUser.getRoles());
 
 		existingUser.setUsername(updatedFormUser.getUsername());
-		existingUser.setPassword(updatedFormUser.getPassword());
 		existingUser.setName(updatedFormUser.getName());
 		existingUser.setLastName(updatedFormUser.getLastName());
+
+	
 
 		// Aggiorna l'utente con il nuovo ticket nella lista
 		uService.update(existingUser);
@@ -149,6 +151,8 @@ public class UserController {
 		attributes.addFlashAttribute("successMessage", "User with id " + updatedFormUser.getId() + ": "
 				+ updatedFormUser.getUsername() + ", has been UPDATED!");
 
+		// controllo per tornare al login nel caso sia l'utente a modificare le proprie
+		// credenziali di accesso
 		if (loggedUser.getUsername().equals("admin")) {
 			return "redirect:/users/" + updatedFormUser.getId();
 		} else {
@@ -210,7 +214,7 @@ public class UserController {
 		tService.update(ticket);
 
 		// Ritorna alla pagina dell'utente
-		return "redirect:/users"; // Reindirizza alla pagina di modifica dell'utente
+		return "redirect:/tickets/" + ticketId; // Reindirizza alla pagina di modifica dell'utente
 	}
 
 	@GetMapping("/{userId}/{ticketId}/addNote")
@@ -235,16 +239,15 @@ public class UserController {
 
 		return "notes/create"; // Reindirizza alla pagina di modifica della note
 	}
-	
-	
+
 	@PostMapping("/{userId}/setNotAtWork")
-    public String updateUserAtWorkStatus(@PathVariable Integer userId, @RequestParam boolean notAtWork) {
-        User user = uService.findById(userId);
-        
-            user.setNotAtWork(notAtWork);
-            uService.update(user);
-        
-        return "redirect:/users/" + userId;
-    }
+	public String updateUserAtWorkStatus(@PathVariable Integer userId, @RequestParam boolean notAtWork) {
+		User user = uService.findById(userId);
+
+		user.setNotAtWork(notAtWork);
+		uService.update(user);
+
+		return "redirect:/users/" + userId;
+	}
 
 }

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmins:th="http://www.thymeleaf.org">
+
+	<head th:insert="~{fragments/fragments :: head}">
+	</head>
+
+	<body class="d-flex flex-column min-vh-100">
+		<header>
+			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+		</header>
+		
+		<h1 class="text-center mt-5">Access Denied</h1>
+		
+		<footer th:replace="~{fragments/fragments :: footer}"></footer>
+				<th:block th:replace="~{fragments/fragments :: scripts}"></th:block>
+			</body>
+
+		</html>

@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html xmins:th="http://www.thymeleaf.org">
-	<script src="https://kit.fontawesome.com/cdcc0fe8e2.js" crossorigin="anonymous"></script>
-
 	<th:block th:fragment="navbar">
 		<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
 			<div class="container-fluid">
 				<a class="navbar-brand" th:href="@{/}">
-					<img src="https://logodix.com/logo/492584.jpg" width="30" height="30">
+					<img th:src="@{/img/icon.jpeg}" width="30" height="30">
 				</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
 					data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -26,26 +24,20 @@
 							<li class="nav-item">
 								<a class="nav-link" th:href="@{/categories}">Categories</a>
 							</li>
-							<li class="nav-item">
-								<a class="nav-link" th:href="@{/users}">Users</a>
-							</li>
-						</th:block>
-						<th:block sec:authorize="hasAuthority('USER')">
-							<li class="nav-item">
-								<a class="nav-link" th:href="@{/users}">Profile</a>
-							</li>
-						</th:block>
-					</ul>
-					<div class="d-flex flex-end nav-item me-2">
-						<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-							<li>
-								<span class="nav-link" sec:authentication="name"> </span>
-							</li>
+							<th:block sec:authorize="hasAuthority('ADMIN')">
+								<li class="nav-item">
+									<a class="nav-link" th:href="@{/users}">Users</a>
+								</li>
+							</th:block>
 
-							<li class="">
-								<a class="nav-link" th:href="@{/logout}">Logout</a>
-							</li>
-						</ul>
+
+					</ul>
+					<div class="nav-item text-center text-white-50">
+						<i class="fa-solid fa-user " style="font-size: 15px;"></i>
+						<a class="nav-link "
+							th:href="@{/users/{id}(id=${loggedUserId})}">[[${loggedUser.name}]]
+
+						</a>
 					</div>
 				</div>
 			</div>

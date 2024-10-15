@@ -4,7 +4,7 @@
 	<head th:insert="~{fragments/fragments :: head}">
 	</head>
 
-	<body>
+	<body class="d-flex flex-column min-vh-100">
 		<header>
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
@@ -17,8 +17,8 @@
 					<form id="ticket-form" th:object="${ticket}" th:action="@{/tickets/edit/{id}(id = ${ticket.id})}"
 						method="POST">
 
-											
-						
+
+
 						<th:block sec:authorize="hasAuthority('ADMIN')">
 							<div class="mb-3">
 								<label for="exampleFormControlInput1" class="form-label">Title</label>
@@ -54,7 +54,8 @@
 							</div>
 							<div>
 								<label for="select-category" class="form-label">Category:</label>
-								<select id="select-category" class="form-select mb-3" th:field="*{category}" th:value="*{category}">
+								<select id="select-category" class="form-select mb-3" th:field="*{category}"
+									th:value="*{category}">
 									<option th:each="category : ${categories}" th:text="${category.name}"
 										th:value="${category.id}">
 									</option>
@@ -63,7 +64,8 @@
 							<div>
 								<label for="select-user" class="form-label">Assign to user:</label>
 								<select id="select-user" class="form-select mb-3" th:field="*{user}">
-									<option th:each="user : ${users}" th:if=${!user.notAtWork} th:value="${user.id}">[[${user.name}]]
+									<option th:each="user : ${users}" th:if=${!user.notAtWork} th:value="${user.id}">
+										[[${user.name}]]
 										[[${user.lastName}]]: [[${user.username}]]</option>
 								</select>
 							</div>
@@ -72,22 +74,19 @@
 
 						<div class="mb-3 d-flex justify-content-around">
 							<input type="submit" class="btn btn-primary btn-lg" value="Update ticket">
-							<input type="reset" class="btn btn-warning btn-lg" value="Reset fields">
+							
+							
+								<a th:href="@{/tickets}" class="btn btn-warning btn-lg">Back to tickets</a>
+							
 						</div>
 					</form>
-					<th:block th:if="${ticket.user != null}">
-						<form th:action="@{/tickets/done/{id}(id=${ticket.id})}" method="post">
-							<input type="submit" class="btn btn-success btn-lg" value="Set to Done">
-						</form>
-					</th:block>
 
 
 
 
 
-					<div class="card-body d-flex justify-content-center align-items-center">
-						<a th:href="@{/tickets}" class="btn btn-primary">Back to tickets</a>
-					</div>
+
+
 				</div>
 			</div>
 		</main>
