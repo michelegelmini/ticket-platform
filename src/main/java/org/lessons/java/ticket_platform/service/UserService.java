@@ -1,6 +1,7 @@
 package org.lessons.java.ticket_platform.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 
@@ -24,10 +25,10 @@ public class UserService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		//cerca nel database se esiste un utente con quell'username
+		
 		Optional<User> user = userRepository.findByUsername(username);
 
-		//se esiste costruisci una nuova istanza con i dettagli dell'utente corrispondente, altrimenti lancia l'eccezione username not found
+		
 		if (user.isPresent()) {
 			return new DatabaseUserDetails(user.get());
 		} else
@@ -44,7 +45,7 @@ public class UserService implements UserDetailsService{
 	}
 
 	public User findByUsername(String username) {
-		return userRepository.findByUsername(username).get();
+		return userRepository.findByUsername(username).orElseThrow(() -> new NoSuchElementException("User not found with username: " + username));
 	}
 	
 	public User create(User user) {
@@ -52,6 +53,9 @@ public class UserService implements UserDetailsService{
 	}
 
 	public User update(User user) {
+		if(userRepository.existsByUsername(user.getUsername())) {
+			throw new IllegalArgumentException("Username already in use");
+		}
 		return userRepository.save(user);
 	}  
 
@@ -63,6 +67,9 @@ public class UserService implements UserDetailsService{
 		userRepository.deleteById(id);
 	}
 	
+	public boolean existsByUsername(String username) {
+		return userRepository.existsByUsername(username);
+	}
 
 	
 }

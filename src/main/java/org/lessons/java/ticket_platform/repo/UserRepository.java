@@ -14,5 +14,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 	public List<User> findByUsernameContainingIgnoreCaseOrderByIdAsc(String username);
 	
+	public boolean existsByUsername(String username);
+	
 	
 }

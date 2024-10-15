@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
         )
         .exceptionHandling(handling -> handling
-                .accessDeniedPage("/pages/error"))
+                .accessDeniedPage("/pages/accessDenied"))
                 .formLogin(withDefaults())
                 .logout(withDefaults())
                 .csrf(csrf -> csrf.disable());

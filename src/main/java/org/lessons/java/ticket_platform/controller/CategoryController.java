@@ -28,11 +28,11 @@ public class CategoryController {
 	@Autowired
 	private CategoryService cService;
 
+	// Index
 	@GetMapping
 	public String index(Model model, @RequestParam(name = "name", required = false) String name) {
 
 		model.addAttribute("categoryName", name);
-		// model.addAttribute("username", authentication.getName());
 
 		List<Category> categoryList;
 
@@ -54,14 +54,8 @@ public class CategoryController {
 		return "/categories/index";
 	}
 
-	// show
-//	@GetMapping("/{id}")
-//	public String show(@PathVariable("id") Integer ticketId, Model model) {
-//		model.addAttribute("ticket", tService.findById(ticketId));
-//		return "/tickets/show";
-//	}
-//	
-	// create
+
+	// Create
 	@GetMapping("/create")
 	public String create(Model model) {
 		model.addAttribute("category", new Category());
@@ -98,12 +92,12 @@ public class CategoryController {
 	public String update(@Valid @ModelAttribute("category") Category updatedFormCategory, BindingResult bindingResult,
 			RedirectAttributes attributes, Model model) {
 
-		// se ci sono errori nel form, mostra gli errori
+		
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("categories", cService.findAllSortedById());
 			return "/tickets/edit";
 		}
-		// altrimenti salva il ticket
+		
 		cService.update(updatedFormCategory);
 
 		attributes.addFlashAttribute("successMessage", "Ticket with id " + updatedFormCategory.getId() + ": "
@@ -116,7 +110,6 @@ public class CategoryController {
 	@PostMapping("/delete/{id}")
 	public String delete(@PathVariable("id") Integer id, RedirectAttributes attributes) {
 
-		// deleteById cerca ed elimina in un unico comando
 
 		Category categoryToDelete = cService.findById(id);
 		cService.delete(id);

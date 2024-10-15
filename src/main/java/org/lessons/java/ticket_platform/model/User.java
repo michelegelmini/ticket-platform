@@ -23,6 +23,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -35,22 +37,23 @@ public class User {
 	@Column(name = "id")
 	private Integer id;
 
-	@NotNull
-	@NotEmpty
+	@Column(unique = true)
+	@NotBlank(message = "USERNAME is required")
 	private String username;
 
 	@NotNull
 	@NotEmpty
 	private String password;
 
+	@NotBlank(message = "NAME is required")
 	private String firstName;
-
+	@NotBlank(message = "LAST NAME is required")
 	private String lastName;
 
 	private String picture;
 
 	private boolean isAvailable;
-	
+
 	private boolean notAtWork;
 
 	public boolean isNotAtWork() {
@@ -63,7 +66,7 @@ public class User {
 
 	@ElementCollection
 	private List<Ticket> ticketsInProgress;
-	
+
 	@ElementCollection
 	private List<Ticket> finishedTickets;
 
@@ -74,7 +77,7 @@ public class User {
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	@JsonManagedReference
 	private List<Ticket> tickets;
-	
+
 //	@Formula("(SELECT tickets.id "
 //			+ "from tickets "
 //			+ "INNER JOIN users on tickets.id = users.id "
@@ -130,11 +133,10 @@ public class User {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	
+
 	public String getFormattedName() {
 		return this.firstName + " " + this.lastName;
 	}
-	
 
 	public String getPicture() {
 		return picture;
@@ -143,27 +145,26 @@ public class User {
 	public void setPicture(String picture) {
 		this.picture = picture;
 	}
-	
+
 	public void setAvailability() {
 		for (Ticket ticket : tickets) {
 			String statusToCheck = ticket.getStatus();
 			if (statusToCheck.equals("Doing")) {
-				this.setIsAvailable(false);		
-			} 
+				this.setIsAvailable(false);
+			}
 		}
-		this.setIsAvailable(true);	
+		this.setIsAvailable(true);
 	}
 
 	public boolean getIsAvailable() {
 		for (Ticket ticket : tickets) {
 			String statusToCheck = ticket.getStatus();
 			if (statusToCheck.equals("Doing")) {
-				return false;		
-			} 
+				return false;
+			}
 		}
-		return true;	
+		return true;
 	}
-	
 
 	public void setIsAvailable(boolean isAvailable) {
 		this.isAvailable = isAvailable;
@@ -199,31 +200,30 @@ public class User {
 	}
 
 	public List<Ticket> getTicketsInProgress() {
-	    if (ticketsInProgress == null) {
-	        ticketsInProgress = new ArrayList<>();
-	    }
-	    ticketsInProgress.clear();
-	    for (Ticket ticket : tickets) {
-	        if(ticket.getStatus().equals("Doing")) {
-	            ticketsInProgress.add(ticket);
-	        }
-	    }
-	    return ticketsInProgress;
+		if (ticketsInProgress == null) {
+			ticketsInProgress = new ArrayList<>();
+		}
+		ticketsInProgress.clear();
+		for (Ticket ticket : tickets) {
+			if (ticket.getStatus().equals("Doing")) {
+				ticketsInProgress.add(ticket);
+			}
+		}
+		return ticketsInProgress;
 	}
-	
-	public List<Ticket> getfinishedTickets(){
+
+	public List<Ticket> getfinishedTickets() {
 		if (finishedTickets == null) {
 			finishedTickets = new ArrayList<>();
-	    }
+		}
 		finishedTickets.clear();
-	    for (Ticket ticket : tickets) {
-	        if(ticket.getStatus().equals("Done")) {
-	        	finishedTickets.add(ticket);
-	        }
-	    }
-	    return finishedTickets;
+		for (Ticket ticket : tickets) {
+			if (ticket.getStatus().equals("Done")) {
+				finishedTickets.add(ticket);
+			}
+		}
+		return finishedTickets;
 	}
-	    
 
 //	public void setTicketsInProgress(List<Ticket> ticketsInProgress) {
 //		this.ticketsInProgress = ticketsInProgress;

@@ -29,14 +29,6 @@ public class PageController {
 			return "redirect:/login";
 		}
 		
-		
-//		String loggedUser = principal.getName();
-		List<User> userList;
-		User loggedUser = uService.findByUsername(principal.getName());
-		model.addAttribute("loggedUser", loggedUser);
-		int loggedUserId = loggedUser.getId();
-		model.addAttribute("loggedUserId", loggedUserId);
-	
 		return "pages/home";	
 	}
 
@@ -45,9 +37,9 @@ public class PageController {
 		return "pages/home";
 	}
 
-	@GetMapping("/pages/error")
+	@GetMapping("/pages/accessDenied")
 	public String error() {
-		return "/pages/error";
+		return "/pages/accessDenied";
 	}
 
 }

@@ -7,14 +7,16 @@
 	<body class="d-flex flex-column min-vh-100">
 		<header>
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
-
 		</header>
+
+		<!--USER EDIT-->
+
 		<main class="container" th:object="${user}">
 			<div class="d-flex justify-content-around">
 				<div class="col-3 card m-4 d-flex justify-content-center align-items-center">
 					<div class="card-body text-center">
 						<img class="img-fluid me-0" th:src="${user.picture}+${user.id}+'.png'"></img>
-						<h1 class="card-title">[[ *{name} ]] [[*{lastName}]]</h1>
+						<h1 class="card-title">[[ *{getFormattedName} ]]</h1>
 						<h3 class="card-subtitle mb-2 text-muted">Username: [[ *{username} ]]</h3>
 
 
@@ -33,7 +35,7 @@
 
 				<div class="col-9">
 					<th:block sec:authorize="hasAuthority('ADMIN')">
-					<h1 class="py-4 mb-2 text-center">Editing [[ *{getFormattedName()}]]: [[${user.username}]]</h1>
+						<h1 class="py-4 mb-2 text-center">Editing [[ *{getFormattedName()}]]: [[${user.username}]]</h1>
 					</th:block>
 					<th:block sec:authorize="hasAuthority('USER')">
 						<h1 class="py-4 mb-2 text-center">Editing your profile</h1>
@@ -81,45 +83,53 @@
 
 
 
-							<!-- Button trigger modal -->
-							<a type="button" class="btn btn-success" data-bs-toggle="modal"
-								th:data-bs-target="'#update-modal-' + ${user.id}">Update User
-
-							</a>
-
-							<!-- Modal -->
-							<div class="modal fade" tabindex="-1" th:id="'update-modal-' + ${user.id}">
-								<div class="modal-dialog modal-dialog-centered">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h5 class="modal-title">Confirm Update</h5>
-											<button type="button" class="btn-close" data-bs-dismiss="modal"
-												aria-label="Close"></button>
-										</div>
-										<div class="modal-body">
-											<p>Confirm new data of [[${user.username}]]?</p>
-										</div>
-										<div class="modal-footer">
-											<button type="button" class="btn btn-secondary"
-												data-bs-dismiss="modal">Close</button>
-											<form class="d-inline-block" th:action="@{/users/edit/{id}(id=${user.id})}"
-												method="POST">
-												<button type="submit" class="btn btn-danger m-1"
-													value="Update user">Confirm</button>
-											</form>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<input type="reset" class="btn btn-warning btn" value="Reset fields">
-
 							<th:block sec:authorize="hasAuthority('ADMIN')">
-								<a th:href="@{/users}" class="btn btn-primary">Back to users</a>
+								<input type="submit" class="btn btn-success" value="Update User">
+							</th:block>
+
+							<!-- Button trigger modal for USER-->
+							<th:block sec:authorize="hasAuthority('USER')">
+								<button type="button" class="btn btn-success m-1" data-bs-toggle="modal"
+									data-bs-placement="top" title="Update your profile"
+									th:data-bs-target="'#update-modal-' + ${user.id}" value="Update your profile">Update
+									your profile </button>
 							</th:block>
 						</div>
 
+						<!-- Modal -->
+						<div class="modal fade" tabindex="-1" th:id="'update-modal-' + ${user.id}">
+							<div class="modal-dialog modal-dialog-centered">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title">Confirm Update</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal"
+											aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<p>Confirm the updates? You will be redirected to login</p>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary"
+											data-bs-dismiss="modal">Close</button>
+										<form class="d-inline-block" th:action="@{/users/edit/{id}(id=${user.id})}"
+											method="POST">
+											<button type="submit" class="btn btn-success m-1"
+												value="Update user">Update</button>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<input type="reset" class="btn btn-warning btn" value="Reset fields">
+
+						<th:block sec:authorize="hasAuthority('ADMIN')">
+							<a th:href="@{/users}" class="btn btn-primary">Back to users</a>
+						</th:block>
+					</form>
 				</div>
+
+			</div>
 
 
 

@@ -118,7 +118,7 @@
 							<th>Buttons</th>
 
 						</tr>
-						<tr th:each="ticket : ${tickets}" th:object="${ticket}">
+						<tr th:each="ticket : ${tickets}" th:object="${ticket}" >
 							<th>[[ *{id} ]]</th>
 							<th>[[ *{title} ]]</th>
 							<th>[[*{getStatus()}]] </th>
@@ -135,7 +135,7 @@
 							<th>
 								<th:block th:switch="*{priority}">
 									<div th:case="1">
-										<span class="badge bg-primary text-white"
+										<span class="badge bg-primary text-white" 
 											style="min-width: 100%; text-align: center;">
 											<span>Not Urgent</span>
 										</span>
@@ -200,7 +200,7 @@
 											class="fa-solid fa-file-lines"></i></a>
 
 									<a class="btn btn-success m-1" th:href="@{tickets/edit/{id}(id=${ticket.id})}"
-										data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i
+										data-bs-toggle="tooltip" data-bs-placement="top" title="Edit" th:classappend="${ticket.status == 'Done'} ? 'disabled' : ''"><i
 											class="fa-solid fa-pencil"></i></a>
 
 

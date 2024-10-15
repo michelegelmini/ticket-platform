@@ -116,9 +116,9 @@ public class TicketController {
 		model.addAttribute("loggedUserId", loggedUserId);		
 		
 		if (ticket.getUser() == null) {
-			return "/pages/error"; 
+			return "/pages/accessDenied"; 
 		} else if (!ticket.getUser().getId().equals(loggedUserId) && !loggedUser.getUsername().equals("admin")) {
-			return "/pages/error"; 
+			return "/pages/accessDenied"; 
 	    }
 	
 		return "/tickets/show";

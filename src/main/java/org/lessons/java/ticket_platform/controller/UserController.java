@@ -126,24 +126,30 @@ public class UserController {
 	// update
 	@PostMapping("/edit/{id}")
 	public String update(@PathVariable("id") Integer id, @Valid @ModelAttribute("user") User updatedFormUser,
-		 Ticket ticket, RedirectAttributes attributes, Model model,
-			Authentication authentication, BindingResult bindingResult, Principal principal) {
+			BindingResult bindingResult, Ticket ticket, RedirectAttributes attributes, Model model,
+			Authentication authentication, Principal principal) {
 
-		List<Ticket> ticketList;
 		User loggedUser = uService.findByUsername(principal.getName());
-		int loggedUserId = loggedUser.getId();
 		User existingUser = uService.findById(id);
 
+		if (bindingResult.hasErrors() || updatedFormUser.getUsername() == null) {
+			model.addAttribute("users", uService.findAllSortedById());
+			return "/users/edit";
+		}
+		
+		if (uService.existsByUsername(updatedFormUser.getUsername())) {
+		        bindingResult.rejectValue("username", "error.username", "Username already in use");
+		        return "/users/edit";
+		    }
+
+
 		// salva lo user
-		// Aggiungi il ticket alla lista dei ticket dell'utente
 		updatedFormUser.addTicket(ticket);
 		existingUser.setRoles(existingUser.getRoles());
 
 		existingUser.setUsername(updatedFormUser.getUsername());
 		existingUser.setName(updatedFormUser.getName());
 		existingUser.setLastName(updatedFormUser.getLastName());
-
-	
 
 		// Aggiorna l'utente con il nuovo ticket nella lista
 		uService.update(existingUser);
@@ -153,7 +159,7 @@ public class UserController {
 
 		// controllo per tornare al login nel caso sia l'utente a modificare le proprie
 		// credenziali di accesso
-		if (loggedUser.getUsername().equals("admin")) {
+		if (loggedUser.getRoles().contains("ADMIN")) {
 			return "redirect:/users/" + updatedFormUser.getId();
 		} else {
 			return "redirect:/login";

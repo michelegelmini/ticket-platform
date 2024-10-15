@@ -9,9 +9,9 @@
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 		</header>
 
+
+
 		<!--USER SHOW-->
-
-
 		<!--User data SECTION-->
 		<main class="container d-flex" th:object="${user}">
 			<div class="col-md-4 d-flex justify-content-center">
@@ -78,6 +78,14 @@
 
 			<div class="col-md-8">
 				<!--TICKETS SECTION-->
+
+				<!--alert after create/edit		-->
+				<div class="m-4">
+					<th:block th:if="${successMessage != null}">
+						<div th:insert="~{fragments/fragments :: successAlert(${successMessage})}"></div>
+					</th:block>
+				</div>
+
 
 				<h1 class="text-left mt-4">Working on:</h1>
 				<table class="table table-striped mt-2 align-middle text-center">

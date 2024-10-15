@@ -22,7 +22,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "tickets")
@@ -33,13 +37,15 @@ public class Ticket {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@NotNull
+	@NotBlank(message = "TITLE is required")
 	private String title;
 
-	@NotNull
+	@NotBlank(message = "CONTENT is required")
 	private String content;
 
 	@NotNull
+	@Min(1)
+    @Max(5)
 	private int priority;
 
 	private String status;

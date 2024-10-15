@@ -8,25 +8,26 @@
 }
 
 .btn-primary:hover {
-    background-color: rgb(70, 108, 127) !important; 
-    border-color: rgb(70, 108, 127) !important; 
-	}
+	background-color: rgb(70, 108, 127) !important;
+	border-color: rgb(70, 108, 127) !important;
+}
 
 
 .btn-primary {
 	background-color: var(--bs-primary) !important;
 	border-color: var(--bs-primary) !important;
 	--bs-btn-hover-bg: rgb(111, 167, 194) !important;
-	
+
 }
+
 .bg-primary {
 	background-color: var(--bs-primary) !important;
 	border-color: var(--bs-primary) !important;
 	--bs-btn-hover-bg: rgb(111, 167, 194) !important;
-	
+
 }
 
-.bg-orange{
+.bg-orange {
 	background-color: orange;
 }
 
@@ -41,19 +42,19 @@
 	color: var(--bs-primary) !important;/
 }
 
-.badge{
-	min-width: 100%; 
+.badge {
+	min-width: 100%;
 	text-align: center;
 }
 
-.mg-badge{
-	min-width: auto; 
+.mg-badge {
+	min-width: auto;
 }
 
 .btn {
 	border-radius: 0;
 
-		text-align: center;
+	text-align: center;
 }
 
 .input-group {
@@ -69,3 +70,4 @@ table img {
 	max-height: 50px;
 	width: auto;
 }
+
