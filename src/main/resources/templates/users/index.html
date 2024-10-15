@@ -65,7 +65,8 @@
 											<a type="button" th:href="@{users/{id}(id=${user.id})}"
 												data-bs-toggle="tooltip" data-bs-placement="top"
 												th:title="${user.username}">
-												<img class="img-fluid me-0 rounded-circle" th:src="${user.picture}+${user.id}+'.png'">
+												<img class="img-fluid me-1 rounded-circle"
+													th:src="${user.picture}+${user.id}+'.png'">
 											</a>
 										</th:block>
 										<th:block th:if="${user.picture == null}">
@@ -75,17 +76,15 @@
 												<img class="img-fluid me-0" th:src="@{/img/profile-pic-00.jpg}">
 											</a>
 										</th:block>
-
-										<th:block th:if="*{isAvailable && !notAtWork}">
-											<span class="ms-3 text-success"> <i class="fa-solid fa-circle"></i> </span>
+										<th:block th:if="*{isAvailable && !notAtWork}"><span class="text-success"><i
+													class="fa-solid fa-circle"></i></span>
 										</th:block>
-										<th:block th:if="*{!isAvailable && !notAtWork }">
-											<span class="ms-3 text-warning"> <i class="fa-solid fa-circle"></i> </span>
+										<th:block th:if="*{!isAvailable && !notAtWork }"><span class="text-warning"><i
+													class="fa-solid fa-circle"></i></span>
 										</th:block>
-										<th:block th:if="*{notAtWork}">
-											<span class="ms-3 text-danger"> <i class="fa-solid fa-circle"></i> </span>
+										<th:block th:if="*{notAtWork}"><span class="text-danger"><i
+													class="fa-solid fa-circle"></i></span>
 										</th:block>
-
 									</th>
 									<th>[[ *{name} ]]</th>
 									<th>[[*{lastName}]]</th>

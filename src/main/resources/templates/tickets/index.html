@@ -35,12 +35,12 @@
 				<div class="input-group input-group-sm me-1">
 					<span class="input-group-text">Filter by status</span>
 					<div class="btn-group" role="group">
-						<th:block sec:authorize="hasAuthority('ADMIN')">
 							<form th:action="@{/tickets}" method="GET">
 								<button type="submit" name="status" class="btn btn-secondary"
 									th:classappend="${status == null or status == 'None'} ? 'active' : ''">None</button>
 							</form>
 
+						<th:block sec:authorize="hasAuthority('ADMIN')">
 							<form th:action="@{/tickets}" method="GET">
 								<button type="submit" name="status" th:value="'To do'" th:text="'To do'"
 									class="btn btn-secondary"
@@ -100,7 +100,7 @@
 
 
 			<div class="col-12">
-				<!--ticket view-->
+				<!--ticket table view-->
 				<th:block th:if="${tickets.size > 0}">
 
 

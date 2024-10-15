@@ -45,7 +45,10 @@ public class PageController {
 		return "pages/home";
 	}
 
-
+	@GetMapping("/pages/error")
+	public String error() {
+		return "/pages/error";
+	}
 
 }
 

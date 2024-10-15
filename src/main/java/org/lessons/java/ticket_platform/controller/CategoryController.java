@@ -47,6 +47,9 @@ public class CategoryController {
 
 		// li inserisco nel modello
 		model.addAttribute("categories", categoryList);
+		
+		
+		
 
 		return "/categories/index";
 	}

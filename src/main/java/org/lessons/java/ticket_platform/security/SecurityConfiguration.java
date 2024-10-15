@@ -28,7 +28,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/users").hasAnyAuthority("ADMIN")
                         .requestMatchers("/categories").hasAuthority("ADMIN")
                         .requestMatchers("/tickets", "/tickets/*").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers("/pages/error").permitAll()
+                        .requestMatchers("/pages").permitAll()
                         .requestMatchers("/webjars/**").permitAll()
                         .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**").permitAll()
                         .anyRequest().authenticated()

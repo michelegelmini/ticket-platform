@@ -32,8 +32,12 @@
 
 
 				<div class="col-9">
+					<th:block sec:authorize="hasAuthority('ADMIN')">
 					<h1 class="py-4 mb-2 text-center">Editing [[ *{getFormattedName()}]]: [[${user.username}]]</h1>
-
+					</th:block>
+					<th:block sec:authorize="hasAuthority('USER')">
+						<h1 class="py-4 mb-2 text-center">Editing your profile</h1>
+					</th:block>
 					<form id="user-form" th:object="${user}" th:action="@{/users/edit/{id}(id=${user.id})}"
 						method="POST">
 						<div class="mb-3">
@@ -46,7 +50,7 @@
 								</ul>
 							</div>
 						</div>
-						
+
 						<div class="mb-3">
 							<label for="exampleFormControlInput1" class="form-label">Name</label>
 							<input type="text" class="form-control" id="firstName" placeholder="Type your Name"
@@ -110,9 +114,9 @@
 
 							<input type="reset" class="btn btn-warning btn" value="Reset fields">
 
-
-							<a th:href="@{/users}" class="btn btn-primary">Back to users</a>
-
+							<th:block sec:authorize="hasAuthority('ADMIN')">
+								<a th:href="@{/users}" class="btn btn-primary">Back to users</a>
+							</th:block>
 						</div>
 
 				</div>

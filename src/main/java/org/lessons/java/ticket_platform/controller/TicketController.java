@@ -115,11 +115,9 @@ public class TicketController {
 		model.addAttribute("categories", cService.findAllSortedById());
 		model.addAttribute("loggedUserId", loggedUserId);		
 		
-		if (loggedUser.getUsername().equals("admin")) {
-			return "/tickets/show";
-		} else if (ticket.getUser() == null) {
+		if (ticket.getUser() == null) {
 			return "/pages/error"; 
-		}else if (!ticket.getUser().getId().equals(loggedUserId) && !loggedUser.getUsername().equals("admin")) {
+		} else if (!ticket.getUser().getId().equals(loggedUserId) && !loggedUser.getUsername().equals("admin")) {
 			return "/pages/error"; 
 	    }
 	

@@ -148,27 +148,24 @@ public class User {
 		for (Ticket ticket : tickets) {
 			String statusToCheck = ticket.getStatus();
 			if (statusToCheck.equals("Doing")) {
-				this.setAvailable(false);		
+				this.setIsAvailable(false);		
 			} 
 		}
-		this.setAvailable(true);	
+		this.setIsAvailable(true);	
 	}
 
 	public boolean getIsAvailable() {
-		return isAvailable;
-	}
-	
-	public boolean isAvailable() {
 		for (Ticket ticket : tickets) {
 			String statusToCheck = ticket.getStatus();
 			if (statusToCheck.equals("Doing")) {
 				return false;		
 			} 
 		}
-		return true;			
+		return true;	
 	}
+	
 
-	public void setAvailable(boolean isAvailable) {
+	public void setIsAvailable(boolean isAvailable) {
 		this.isAvailable = isAvailable;
 	}
 
