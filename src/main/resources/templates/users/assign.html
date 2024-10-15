@@ -4,7 +4,7 @@
 	<head th:insert="~{fragments/fragments :: head}">
 	</head>
 
-	<body>
+	<body class="d-flex flex-column min-vh-100">
 		<header>
 			<nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
@@ -33,7 +33,7 @@
 						</div>
 					</form>
 					<div class="card-body d-flex justify-content-center align-items-center">
-						<a th:href="@{/users}" class="btn btn-primary">Back to users</a>
+						<a th:href="@{/users}" class="btn btn-primary btn-lg">Back to users</a>
 					</div>
 				</div>
 			</div>

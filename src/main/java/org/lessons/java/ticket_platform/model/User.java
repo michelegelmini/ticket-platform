@@ -224,6 +224,17 @@ public class User {
 		}
 		return finishedTickets;
 	}
+	
+	public boolean isAdmin() {
+		for (Role role : roles) {
+			if (role.getName().equals("ADMIN")) {	
+				return true;
+			} 
+		}
+		return false;
+	}
+	
+	
 
 //	public void setTicketsInProgress(List<Ticket> ticketsInProgress) {
 //		this.ticketsInProgress = ticketsInProgress;

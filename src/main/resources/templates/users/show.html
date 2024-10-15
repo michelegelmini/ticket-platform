@@ -36,7 +36,8 @@
 
 						<div class="card-body">
 							<a class="btn btn-success m-1" th:href="@{edit/{id}(id=${user.id})}">Edit Profile</a>
-							<a class="btn btn-danger m-1" th:href="@{/logout}">Logout</a>
+							
+							<a class="btn btn-danger m-1" th:href="@{/logout}" th:if="${loggedUserId == user.id}">Logout</a>
 						</div>
 
 					</div>
@@ -58,7 +59,9 @@
 							</form>
 						</th:block>
 					</th:block>
-
+					
+					
+					<!--Admin Buttons-->
 					<th:block sec:authorize="hasAuthority('ADMIN')">
 						<div class="card-body">
 							<a class="btn btn-primary m-1" style="min-width: 100%;"
@@ -68,7 +71,9 @@
 								th:href="@{assign/{id}(id=${user.id})}" th:unless="*{tickets.size > 0}">Assign a
 								Ticket</a>
 							<a th:href="@{/users}" style="min-width: 100%;" class="btn btn-primary m-1">Back to
-								users</a>
+								Users</a>
+							<a class="btn btn-primary m-1" style="min-width: 100%;" th:href="@{/tickets}">Back to
+								Tickets</a>
 						</div>
 					</th:block>
 

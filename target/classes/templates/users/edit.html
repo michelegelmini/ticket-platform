@@ -82,7 +82,7 @@
 						<div class="mb-3 d-flex justify-content-around">
 
 
-
+							<!-- Button submit for ADMIN-->
 							<th:block sec:authorize="hasAuthority('ADMIN')">
 								<input type="submit" class="btn btn-success" value="Update User">
 							</th:block>
@@ -94,40 +94,42 @@
 									th:data-bs-target="'#update-modal-' + ${user.id}" value="Update your profile">Update
 									your profile </button>
 							</th:block>
-						</div>
 
-						<!-- Modal -->
-						<div class="modal fade" tabindex="-1" th:id="'update-modal-' + ${user.id}">
-							<div class="modal-dialog modal-dialog-centered">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h5 class="modal-title">Confirm Update</h5>
-										<button type="button" class="btn-close" data-bs-dismiss="modal"
-											aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-										<p>Confirm the updates? You will be redirected to login</p>
-									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-secondary"
-											data-bs-dismiss="modal">Close</button>
-										<form class="d-inline-block" th:action="@{/users/edit/{id}(id=${user.id})}"
-											method="POST">
-											<button type="submit" class="btn btn-success m-1"
-												value="Update user">Update</button>
-										</form>
+
+							<!-- Modal -->
+							<div class="modal fade" tabindex="-1" th:id="'update-modal-' + ${user.id}">
+								<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title">Confirm Update</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal"
+												aria-label="Close"></button>
+										</div>
+										<div class="modal-body">
+											<p>Confirm the updates? You will be redirected to login</p>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary"
+												data-bs-dismiss="modal">Close</button>
+											<form class="d-inline-block" th:action="@{/users/edit/{id}(id=${user.id})}"
+												method="POST">
+												<button type="submit" class="btn btn-success m-1"
+													value="Update user">Update</button>
+											</form>
+										</div>
 									</div>
 								</div>
 							</div>
+
+							<input type="reset" class="btn btn-warning btn" value="Reset fields">
+
+							<th:block sec:authorize="hasAuthority('ADMIN')">
+								<a th:href="@{/users}" class="btn btn-primary">Back to users</a>
+							</th:block>
 						</div>
-
-						<input type="reset" class="btn btn-warning btn" value="Reset fields">
-
-						<th:block sec:authorize="hasAuthority('ADMIN')">
-							<a th:href="@{/users}" class="btn btn-primary">Back to users</a>
-						</th:block>
 					</form>
 				</div>
+			</div>
 
 			</div>
 

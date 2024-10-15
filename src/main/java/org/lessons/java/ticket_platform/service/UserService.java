@@ -53,9 +53,7 @@ public class UserService implements UserDetailsService{
 	}
 
 	public User update(User user) {
-		if(userRepository.existsByUsername(user.getUsername())) {
-			throw new IllegalArgumentException("Username already in use");
-		}
+		
 		return userRepository.save(user);
 	}  
 

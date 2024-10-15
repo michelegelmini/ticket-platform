@@ -41,6 +41,8 @@ public class TicketController {
 	@Autowired
 	private NoteService nService;
 
+	
+	//Index
 	@GetMapping
 	public String index(Model model, @RequestParam(name = "title", required = false) String title,
 			@RequestParam(name = "category", required = false) Category category,
@@ -70,7 +72,7 @@ public class TicketController {
 				model.addAttribute("status", status);
 				ticketList = tService.findByStatus(status);
 			} else {
-				// prendo i dati da consegnare a tickets
+				// no filter
 				ticketList = tService.findAllSortedById();
 			}
 
@@ -115,11 +117,17 @@ public class TicketController {
 		model.addAttribute("categories", cService.findAllSortedById());
 		model.addAttribute("loggedUserId", loggedUserId);		
 		
+		if (loggedUser.isAdmin()) {
+		    // Se l'utente è un amministratore, consenti l'accesso
+		    return "/tickets/show"; 
+		}
+		
+		
 		if (ticket.getUser() == null) {
-			return "/pages/accessDenied"; 
-		} else if (!ticket.getUser().getId().equals(loggedUserId) && !loggedUser.getUsername().equals("admin")) {
-			return "/pages/accessDenied"; 
-	    }
+		    return "/pages/accessDenied"; 
+		} else if (!ticket.getUser().getId().equals(loggedUserId)) {
+		    return "/pages/accessDenied"; 
+		}
 	
 		return "/tickets/show";
 	}
@@ -219,5 +227,9 @@ public class TicketController {
 		return "redirect:/tickets";
 
 	}
+	
+	
+	
+	
 
 }

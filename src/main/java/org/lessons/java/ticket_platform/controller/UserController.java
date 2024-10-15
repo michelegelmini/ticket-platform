@@ -6,7 +6,6 @@ import java.util.List;
 import org.lessons.java.ticket_platform.model.Note;
 import org.lessons.java.ticket_platform.model.Ticket;
 import org.lessons.java.ticket_platform.model.User;
-import org.lessons.java.ticket_platform.service.NoteService;
 import org.lessons.java.ticket_platform.service.TicketService;
 import org.lessons.java.ticket_platform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +35,7 @@ public class UserController {
 	@Autowired
 	private TicketService tService;
 
-	@Autowired
-	private NoteService nService;
-
-//	@Autowired
-//	private DatabaseUserDetailsService dbService;
-
+	// Index
 	@GetMapping
 	public String index(Model model, @RequestParam(name = "username", required = false) String username,
 			Principal principal, Authentication authentication) {
@@ -49,7 +43,7 @@ public class UserController {
 		List<User> userList;
 		User loggedUser = uService.findByUsername(principal.getName());
 
-		if (loggedUser.getUsername().equals("admin")) {
+		if (loggedUser.isAdmin()) {
 			model.addAttribute("username", username);
 			model.addAttribute("username", authentication.getName());
 		} else {
@@ -61,17 +55,15 @@ public class UserController {
 			userList = uService.searchByUsername(username);
 
 		} else {
-			// prendo i dati da consegnare a users
 			userList = uService.findAllSortedById();
 		}
 
-		// li inserisco nel modello
 		model.addAttribute("tickets", tService.findAllSortedById());
 		model.addAttribute("ticketsInProgress", tService.findByStatus("Doing"));
 		model.addAttribute("users", userList);
 
 		username = loggedUser.getUsername();
-		if (username.equals("admin")) {
+		if (loggedUser.isAdmin()) {
 			return "/users/index";
 		} else {
 			return "redirect:/users/" + loggedUser.getId();
@@ -119,7 +111,6 @@ public class UserController {
 		model.addAttribute("tickets", tService.findAllSortedById());
 		model.addAttribute("oldPassword", "");
 
-		// restituisco la view con il model inserito
 		return "users/edit";
 	}
 
@@ -136,14 +127,12 @@ public class UserController {
 			model.addAttribute("users", uService.findAllSortedById());
 			return "/users/edit";
 		}
-		
+
 		if (uService.existsByUsername(updatedFormUser.getUsername())) {
-		        bindingResult.rejectValue("username", "error.username", "Username already in use");
-		        return "/users/edit";
-		    }
+			bindingResult.rejectValue("username", "error.username", "Username already in use");
+			return "/users/edit";
+		}
 
-
-		// salva lo user
 		updatedFormUser.addTicket(ticket);
 		existingUser.setRoles(existingUser.getRoles());
 
@@ -151,7 +140,6 @@ public class UserController {
 		existingUser.setName(updatedFormUser.getName());
 		existingUser.setLastName(updatedFormUser.getLastName());
 
-		// Aggiorna l'utente con il nuovo ticket nella lista
 		uService.update(existingUser);
 
 		attributes.addFlashAttribute("successMessage", "User with id " + updatedFormUser.getId() + ": "
@@ -159,27 +147,12 @@ public class UserController {
 
 		// controllo per tornare al login nel caso sia l'utente a modificare le proprie
 		// credenziali di accesso
-		if (loggedUser.getRoles().contains("ADMIN")) {
-			return "redirect:/users/" + updatedFormUser.getId();
-		} else {
+		if (updatedFormUser.getUsername().equals(loggedUser.getUsername())) {
 			return "redirect:/login";
+
+		} else {
+			return "redirect:/users/" + updatedFormUser.getId();
 		}
-	}
-
-	// delete
-	@PostMapping("/delete/{id}")
-	public String delete(@PathVariable("id") Integer id, RedirectAttributes attributes) {
-
-		// deleteById cerca ed elimina in un unico comando
-
-		User userToDelete = uService.findById(id);
-
-		uService.delete(id);
-
-		attributes.addFlashAttribute("deletedMessage",
-				"User with id " + id + ": " + userToDelete.getUsername() + ", has been DELETED!");
-
-		return "redirect:/users";
 	}
 
 	// assign
@@ -189,40 +162,33 @@ public class UserController {
 		model.addAttribute("user", uService.findById(id));
 		model.addAttribute("tickets", tService.findByStatus("To do"));
 
-		// restituisco la view con il model inserito
 		return "users/assign";
 	}
 
+	
+	//metodo assign, una sorta di piccola "edit" per assegnare un ticket partendo da uno user
 	@PostMapping("/{userId}/assign-ticket")
 	public String assignTicketToUser(@PathVariable Integer userId, @RequestParam("ticketId") Integer ticketId,
 			Model model) {
-		// Trova l'utente esistente
-		User user = uService.findById(userId);
-//		if (user == null) {
-//			model.addAttribute("error", "User not found.");
-//			return "error";
-//		}
-//
-//		// Trova il ticket esistente
-		Ticket ticket = tService.findById(ticketId).get();
-//		if (ticket == null) {
-//			model.addAttribute("error", "Ticket not found.");
-//			return "error";
-//		}
 
-		// Aggiorna l'associazione
-		user.addTicket(ticket); // Aggiunge il ticket alla lista dell'utente
-		ticket.setUser(user); // Imposta l'utente nel ticket
+		User user = uService.findById(userId);
+		//ticketId arriva dal form di assign.html
+		Ticket ticket = tService.findById(ticketId).get();
+
+		//addTicket() è un metodo custom che ho creato per aggiungere un ticket alla lista di ticket dell'utente
+		user.addTicket(ticket);
+		ticket.setUser(user);
+		
+		//una volta assegnato il ticket all'utente modifico il suo stato, sicuramente va in 'Doing'
 		ticket.setDoingStatus();
 
-		// Salva l'utente aggiornato
 		uService.update(user);
 		tService.update(ticket);
 
-		// Ritorna alla pagina dell'utente
-		return "redirect:/tickets/" + ticketId; // Reindirizza alla pagina di modifica dell'utente
+		return "redirect:/tickets/" + ticketId;
 	}
 
+	//metodo per aggiungere una nota ad un ticket partendo dal profilo di un utente
 	@GetMapping("/{userId}/{ticketId}/addNote")
 	public String addNote(@PathVariable Integer userId, @PathVariable("ticketId") Integer ticketId, Model model,
 			Principal principal, Authentication authentication) {
@@ -235,16 +201,16 @@ public class UserController {
 		addedNote.setTicket(tService.findById(ticketId).get());
 		ticket.addNote(addedNote);
 
-//	
-//		uService.update(loggedUser);
-//		tService.update(ticket);
-//		
+	
 		model.addAttribute("ticketId", ticketId);
 		model.addAttribute("userId", userId);
 		model.addAttribute("note", addedNote);
 
-		return "notes/create"; // Reindirizza alla pagina di modifica della note
+		return "notes/create"; 
 	}
+	
+	
+	
 
 	@PostMapping("/{userId}/setNotAtWork")
 	public String updateUserAtWorkStatus(@PathVariable Integer userId, @RequestParam boolean notAtWork) {
